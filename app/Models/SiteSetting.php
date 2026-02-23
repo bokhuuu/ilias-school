@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\ClearsInertiaCache;
 use Illuminate\Database\Eloquent\Model;
 
 class SiteSetting extends Model
 {
+    use ClearsInertiaCache;
+
+
     protected $fillable = [
         'key',
         'value',

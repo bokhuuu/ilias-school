@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ClearsInertiaCache;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -11,7 +12,7 @@ use Spatie\Translatable\HasTranslations;
 
 class AboutPage extends Model implements HasMedia
 {
-    use HasTranslations, InteractsWithMedia, LogsActivity;
+    use HasTranslations, ClearsInertiaCache, InteractsWithMedia, LogsActivity;
 
     protected $table = 'about_page';
 

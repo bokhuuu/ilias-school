@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ClearsInertiaCache;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -9,7 +10,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Faq extends Model
 {
-    use HasTranslations, LogsActivity;
+    use HasTranslations, ClearsInertiaCache, LogsActivity;
 
 
     protected $fillable = [
