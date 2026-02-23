@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\HasGeorgianSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Translatable\HasTranslations;
 
 class Category extends Model
 {
-    use HasTranslations, HasSlug, LogsActivity;
+    use HasTranslations, HasGeorgianSlug, LogsActivity;
 
 
     protected $fillable = [
@@ -44,7 +44,7 @@ class Category extends Model
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class);
+        return $this->belongsToMany(Course::class, 'course_category');
     }
 
 

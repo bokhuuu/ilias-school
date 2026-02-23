@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasGeorgianSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,13 +11,12 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Translatable\HasTranslations;
 
 class Course extends Model implements HasMedia
 {
-    use HasTranslations, HasSlug, InteractsWithMedia, LogsActivity, SoftDeletes;
+    use HasTranslations, HasGeorgianSlug, InteractsWithMedia, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -101,7 +101,7 @@ class Course extends Model implements HasMedia
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class, 'course_category');
     }
 
 
