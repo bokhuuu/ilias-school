@@ -48,7 +48,6 @@ export default function FaqEdit({ faq: { data: faq } }: Props) {
                             <InputError message={errors.answer} />
                         </div>
                         <div className="flex items-center gap-4">
-                            <Input type="number" className="w-24" value={data.sort_order} onChange={(e) => setData('sort_order', Number(e.target.value))} />
                             <label className="flex items-center gap-2">
                                 <input type="checkbox" checked={data.is_active} onChange={(e) => setData('is_active', e.target.checked)} />
                                 აქტიური

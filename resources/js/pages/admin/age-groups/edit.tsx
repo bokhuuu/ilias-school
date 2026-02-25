@@ -54,7 +54,6 @@ export default function AgeGroupEdit({ ageGroup: { data: ageGroup } }: Props) {
                             <TiptapEditor content={data.description} onChange={(html) => setData('description', html)} placeholder="ჯგუფის აღწერა..." />
                         </div>
                         <div className="flex items-center gap-4">
-                            <Input type="number" className="w-24" value={data.sort_order} onChange={(e) => setData('sort_order', Number(e.target.value))} />
                             <label className="flex items-center gap-2">
                                 <input type="checkbox" checked={data.is_active} onChange={(e) => setData('is_active', e.target.checked)} />
                                 აქტიური

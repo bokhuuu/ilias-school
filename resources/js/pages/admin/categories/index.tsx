@@ -57,7 +57,7 @@ export default function CategoriesIndex({ categories: { data: categories } }: Pr
                                             <td className="px-4 py-3 text-muted-foreground">{category.slug}</td>
                                             <td className="px-4 py-3 text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <Link href={`/admin/categories/${category.id}/edit`}>
+                                                    <Link href={`/admin/categories/${category.slug}/edit`}>
                                                         <Button variant="ghost" size="icon"><Pencil className="h-4 w-4" /></Button>
                                                     </Link>
                                                     <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(category)}>
@@ -77,7 +77,7 @@ export default function CategoriesIndex({ categories: { data: categories } }: Pr
             <DeleteConfirmDialog
                 open={!!deleteTarget}
                 onClose={() => setDeleteTarget(null)}
-                deleteUrl={deleteTarget ? `/admin/categories/${deleteTarget.id}` : ''}
+                deleteUrl={deleteTarget ? `/admin/categories/${deleteTarget.slug}` : ''}
                 title="კატეგორიის წაშლა"
                 description={`დარწმუნებული ხართ რომ გსურთ "${deleteTarget?.name}" წაშლა?`}
             />
