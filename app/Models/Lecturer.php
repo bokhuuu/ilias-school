@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ClearsInertiaCache;
-use App\Traits\HasGeorgianSlug;
+use App\Traits\HasUnicodeSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,7 +16,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Lecturer extends Model implements HasMedia
 {
-    use HasTranslations, HasGeorgianSlug, ClearsInertiaCache, InteractsWithMedia, LogsActivity, SoftDeletes;
+    use HasTranslations, HasUnicodeSlug, ClearsInertiaCache, InteractsWithMedia, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'full_name',

@@ -5,7 +5,7 @@ namespace App\Traits;
 use App\Support\SlugHelper;
 use Spatie\Sluggable\HasSlug;
 
-trait HasGeorgianSlug
+trait HasUnicodeSlug
 {
     use HasSlug;
 

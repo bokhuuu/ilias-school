@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ClearsInertiaCache;
-use App\Traits\HasGeorgianSlug;
+use App\Traits\HasUnicodeSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Activitylog\LogOptions;
@@ -13,7 +13,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Category extends Model
 {
-    use HasTranslations, HasGeorgianSlug, ClearsInertiaCache, LogsActivity;
+    use HasTranslations, HasUnicodeSlug, ClearsInertiaCache, LogsActivity;
 
 
     protected $fillable = [
