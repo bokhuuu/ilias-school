@@ -1,18 +1,26 @@
+export interface GalleryImage {
+    id: number;
+    url: string;
+    thumb: string;
+    order: number;
+}
+
 export interface Lecturer {
     id: number;
     full_name: string;
     slug: string;
-    title: string | null;
-    bio: string | null;
-    short_bio: string | null;
+    title: string;
+    bio: string;
+    short_bio: string;
     is_active: boolean;
     sort_order: number;
-    meta_title: string | null;
-    meta_description: string | null;
+    meta_title: string;
+    meta_description: string;
     image: string;
     image_thumb: string;
     image_medium: string;
     og_image: string;
+    gallery: GalleryImage[];
     courses?: Course[];
     created_at: string;
     updated_at: string;
@@ -22,23 +30,24 @@ export interface Course {
     id: number;
     title: string;
     slug: string;
-    description: string | null;
-    short_description: string | null;
-    age_group: string | null;
-    format: string | null;
-    duration: string | null;
-    video_url: string | null;
+    description: string;
+    short_description: string;
+    age_group: string;
+    format: string;
+    duration: string;
+    video_url: string;
     is_active: boolean;
     is_featured: boolean;
     featured_sort_order: number;
     sort_order: number;
-    meta_title: string | null;
-    meta_description: string | null;
+    meta_title: string;
+    meta_description: string;
     image: string;
     image_thumb: string;
     image_medium: string;
     image_large: string;
     og_image: string;
+    gallery: GalleryImage[];
     lecturers?: Lecturer[];
     categories?: Category[];
     syllabus_items?: SyllabusItem[];
@@ -49,6 +58,12 @@ export interface Course {
 export interface SyllabusItem {
     id: number;
     course_id: number;
+    meeting_number: number;
+    title: string;
+    sort_order: number;
+}
+
+export interface SyllabusItemForm {
     meeting_number: number;
     title: string;
     sort_order: number;
@@ -65,7 +80,7 @@ export interface AgeGroup {
     id: number;
     title: string;
     age_range: string;
-    description: string | null;
+    description: string;
     is_active: boolean;
     sort_order: number;
     image: string;
@@ -83,12 +98,13 @@ export interface Faq {
 export interface AboutPage {
     id: number;
     title: string;
-    content: string | null;
-    meta_title: string | null;
-    meta_description: string | null;
+    content: string;
+    meta_title: string;
+    meta_description: string;
     image: string;
     image_medium: string;
     og_image: string;
+    gallery: GalleryImage[];
 }
 
 export interface SiteSettings {

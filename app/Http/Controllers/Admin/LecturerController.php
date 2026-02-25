@@ -80,4 +80,11 @@ class LecturerController extends Controller
 
         return back()->with('success', 'თანმიმდევრობა განახლდა.');
     }
+
+
+    public function toggleActive(Lecturer $lecturer)
+    {
+        $lecturer->update(['is_active' => !$lecturer->is_active]);
+        return back();
+    }
 }

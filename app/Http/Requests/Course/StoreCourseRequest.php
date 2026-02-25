@@ -38,6 +38,9 @@ class StoreCourseRequest extends FormRequest
             'image' => ['nullable', 'image', 'max:2048'],
             'og_image' => ['nullable', 'image', 'max:2048'],
 
+            'gallery' => ['nullable', 'array'],
+            'gallery.*' => ['image', 'max:5120'],
+
             'lecturer_ids' => ['nullable', 'array'],
             'lecturer_ids.*' => ['exists:lecturers,id'],
             'category_ids' => ['nullable', 'array'],

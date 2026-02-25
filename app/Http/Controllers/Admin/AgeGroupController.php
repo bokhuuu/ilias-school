@@ -80,4 +80,11 @@ class AgeGroupController extends Controller
 
         return back()->with('success', 'თანმიმდევრობა განახლდა.');
     }
+
+
+    public function toggleActive(AgeGroup $ageGroup)
+    {
+        $ageGroup->update(['is_active' => !$ageGroup->is_active]);
+        return back();
+    }
 }

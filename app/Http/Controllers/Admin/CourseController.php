@@ -90,4 +90,11 @@ class CourseController extends Controller
 
         return back()->with('success', 'თანმიმდევრობა განახლდა.');
     }
+
+
+    public function toggleActive(Course $course)
+    {
+        $course->update(['is_active' => !$course->is_active]);
+        return back();
+    }
 }

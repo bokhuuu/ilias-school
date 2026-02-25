@@ -1,3 +1,5 @@
+import { router } from '@inertiajs/react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -11,20 +13,31 @@ import {
 interface Props {
     open: boolean;
     onClose: () => void;
-    onConfirm: () => void;
+    deleteUrl: string;
     title?: string;
     description?: string;
-    processing?: boolean;
 }
 
 export function DeleteConfirmDialog({
     open,
     onClose,
-    onConfirm,
+    deleteUrl,
     title = 'წაშლის დადასტურება',
     description = 'დარწმუნებული ხართ, რომ გსურთ წაშლა? ეს მოქმედება შეუქცევადია.',
-    processing = false,
 }: Props) {
+    const [processing, setProcessing] = useState(false);
+
+    function handleDelete() {
+        if (!deleteUrl) return;
+        setProcessing(true);
+        router.delete(deleteUrl, {
+            onFinish: () => {
+                setProcessing(false);
+                onClose();
+            },
+        });
+    }
+
     return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent>
@@ -33,10 +46,18 @@ export function DeleteConfirmDialog({
                     <DialogDescription>{description}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose} disabled={processing}>
+                    <Button
+                        variant="outline"
+                        onClick={onClose}
+                        disabled={processing}
+                    >
                         გაუქმება
                     </Button>
-                    <Button variant="destructive" onClick={onConfirm} disabled={processing}>
+                    <Button
+                        variant="destructive"
+                        onClick={handleDelete}
+                        disabled={processing}
+                    >
                         {processing ? 'იშლება...' : 'წაშლა'}
                     </Button>
                 </DialogFooter>

@@ -11,7 +11,7 @@ class AboutPageService
 {
     public function get(): AboutPage
     {
-        return AboutPage::firstOrCreate(
+        return AboutPage::with('media')->firstOrCreate(
             ['id' => 1],
             ['title' => ['ka' => 'პროექტის შესახებ'], 'content' => ['ka' => '']]
         );
@@ -58,6 +58,24 @@ class AboutPageService
 
         if (isset($data['og_image']) && $data['og_image'] instanceof UploadedFile) {
             $aboutPage->addMedia($data['og_image'])->toMediaCollection('og_image');
+        }
+
+        if (isset($data['gallery']) && is_array($data['gallery'])) {
+            foreach ($data['gallery'] as $file) {
+                if ($file instanceof UploadedFile) {
+                    $aboutPage->addMedia($file)->toMediaCollection('gallery');
+                }
+            }
+        }
+
+        if (!empty($data['gallery_remove'])) {
+            $aboutPage->media()->whereIn('id', $data['gallery_remove'])->each->delete();
+        }
+
+        if (!empty($data['gallery_order'])) {
+            foreach ($data['gallery_order'] as $index => $mediaId) {
+                $aboutPage->media()->where('id', $mediaId)->update(['order_column' => $index]);
+            }
         }
     }
 }

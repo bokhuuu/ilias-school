@@ -140,5 +140,23 @@ class CourseService
         if (isset($data['og_image']) && $data['og_image'] instanceof UploadedFile) {
             $course->addMedia($data['og_image'])->toMediaCollection('og_image');
         }
+
+        if (isset($data['gallery']) && is_array($data['gallery'])) {
+            foreach ($data['gallery'] as $file) {
+                if ($file instanceof UploadedFile) {
+                    $course->addMedia($file)->toMediaCollection('gallery');
+                }
+            }
+        }
+
+        if (!empty($data['gallery_remove'])) {
+            $course->media()->whereIn('id', $data['gallery_remove'])->each->delete();
+        }
+
+        if (!empty($data['gallery_order'])) {
+            foreach ($data['gallery_order'] as $index => $mediaId) {
+                $course->media()->where('id', $mediaId)->update(['order_column' => $index]);
+            }
+        }
     }
 }

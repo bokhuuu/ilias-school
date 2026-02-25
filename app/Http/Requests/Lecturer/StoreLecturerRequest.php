@@ -31,7 +31,10 @@ class StoreLecturerRequest extends FormRequest
             'is_active' => ['boolean'],
             'sort_order' => ['integer', 'min:0'],
             'image' => ['nullable', 'image', 'max:2048'],
+
             'og_image' => ['nullable', 'image', 'max:2048'],
+            'gallery' => ['nullable', 'array'],
+            'gallery.*' => ['image', 'max:5120'],
         ];
     }
 }

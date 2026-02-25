@@ -20,6 +20,13 @@ class AboutPageResource extends JsonResource
             'image' => $this->getFirstMediaUrl('image'),
             'image_medium' => $this->getFirstMediaUrl('image', 'medium'),
             'og_image' => $this->getFirstMediaUrl('og_image'),
+
+            'gallery' => $this->getMedia('gallery')->map(fn($media) => [
+                'id' => $media->id,
+                'url' => $media->getUrl(),
+                'thumb' => $media->getUrl('thumb'),
+                'order' => $media->order_column,
+            ])->sortBy('order')->values(),
         ];
     }
 }

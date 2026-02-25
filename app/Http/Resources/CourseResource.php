@@ -33,6 +33,13 @@ class CourseResource extends JsonResource
             'image_large' => $this->getFirstMediaUrl('image', 'large'),
             'og_image' => $this->getFirstMediaUrl('og_image'),
 
+            'gallery' => $this->getMedia('gallery')->map(fn($media) => [
+                'id' => $media->id,
+                'url' => $media->getUrl(),
+                'thumb' => $media->getUrl('thumb'),
+                'order' => $media->order_column,
+            ])->sortBy('order')->values(),
+
             'lecturers' => LecturerResource::collection($this->whenLoaded('lecturers')),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'syllabus_items' => SyllabusItemResource::collection($this->whenLoaded('syllabusItems')),

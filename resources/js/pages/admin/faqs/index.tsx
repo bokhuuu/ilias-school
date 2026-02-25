@@ -1,85 +1,86 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { Head, Link } from '@inertiajs/react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
+import AppLayout from '@/layouts/app-layout';
+import { ActiveToggle } from '@/components/admin/active-toggle';
 import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
 import { FlashMessage } from '@/components/admin/flash-message';
-import { Badge } from '@/components/ui/badge';
+import { SortableTableBody } from '@/components/admin/sortable-table';
 import { Button } from '@/components/ui/button';
-import AppLayout from '@/layouts/app-layout';
 import type { Faq } from '@/types/models';
 
 interface Props {
     faqs: { data: Faq[] };
 }
 
-export default function FaqsIndex({ faqs }: Props) {
-    const [deleteTarget, setDeleteTarget] = useState<Faq | null>(null);
-    const [processing, setProcessing] = useState(false);
+const breadcrumbs = [
+    { title: 'დეშბორდი', href: '/admin/dashboard' },
+    { title: 'FAQ', href: '/admin/faqs' },
+];
 
-    function handleDelete() {
-        if (!deleteTarget) return;
-        setProcessing(true);
-        router.delete(`/admin/faqs/${deleteTarget.id}`, {
-            onFinish: () => { setProcessing(false); setDeleteTarget(null); },
-        });
-    }
+export default function FaqsIndex({ faqs: { data: faqs } }: Props) {
+    const [deleteTarget, setDeleteTarget] = useState<Faq | null>(null);
 
     return (
-        <AppLayout breadcrumbs={[
-            { title: 'დეშბორდი', href: '/admin/dashboard' },
-            { title: 'FAQ', href: '/admin/faqs' },
-        ]}>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="FAQ" />
             <FlashMessage />
-
             <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-2xl font-bold">FAQ</h1>
-                    <Button asChild><Link href="/admin/faqs/create"><Plus className="h-4 w-4 mr-2" />ახალი კითხვა</Link></Button>
+                <div className="mb-6 flex items-center justify-between">
+                    <h1 className="text-2xl font-bold">ხშირად დასმული კითხვები</h1>
+                    <Link href="/admin/faqs/create">
+                        <Button><Plus className="mr-2 h-4 w-4" /> ახალი კითხვა</Button>
+                    </Link>
                 </div>
-
-                {faqs.data.length === 0 ? (
-                    <div className="text-center py-12 text-muted-foreground">კითხვები არ მოიძებნა</div>
+                {faqs.length === 0 ? (
+                    <p className="py-12 text-center text-muted-foreground">კითხვები არ მოიძებნა</p>
                 ) : (
-                    <div className="rounded-lg border">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b bg-muted/50">
-                                    <th className="text-left p-3 font-medium">კითხვა</th>
-                                    <th className="text-left p-3 font-medium">სტატუსი</th>
-                                    <th className="text-left p-3 font-medium">რიგითობა</th>
-                                    <th className="text-right p-3 font-medium">მოქმედება</th>
+                    <div className="overflow-x-auto rounded-lg border">
+                        <table className="w-full text-sm">
+                            <thead className="border-b bg-muted/50">
+                                <tr>
+                                    <th className="w-8"></th>
+                                    <th className="px-4 py-3 text-left">კითხვა</th>
+                                    <th className="px-4 py-3 text-left">სტატუსი</th>
+                                    <th className="px-4 py-3 text-right">მოქმედება</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {faqs.data.map((faq) => (
-                                    <tr key={faq.id} className="border-b last:border-0">
-                                        <td className="p-3 font-medium max-w-md truncate">{faq.question}</td>
-                                        <td className="p-3">
-                                            <Badge variant={faq.is_active ? 'default' : 'secondary'}>
-                                                {faq.is_active ? 'აქტიური' : 'არააქტიური'}
-                                            </Badge>
-                                        </td>
-                                        <td className="p-3 text-muted-foreground">{faq.sort_order}</td>
-                                        <td className="p-3">
-                                            <div className="flex justify-end gap-2">
-                                                <Button variant="ghost" size="icon" asChild>
-                                                    <Link href={`/admin/faqs/${faq.id}/edit`}><Pencil className="h-4 w-4" /></Link>
-                                                </Button>
-                                                <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(faq)}>
-                                                    <Trash2 className="h-4 w-4 text-red-500" />
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
+                            <SortableTableBody
+                                items={faqs}
+                                reorderUrl="/admin/faqs/reorder"
+                                renderRow={(item) => {
+                                    const faq = item as Faq;
+                                    return (
+                                        <>
+                                            <td className="px-4 py-3 font-medium">{faq.question}</td>
+                                            <td className="px-4 py-3">
+                                                <ActiveToggle isActive={faq.is_active} toggleUrl={`/admin/faqs/${faq.id}/toggle-active`} />
+                                            </td>
+                                            <td className="px-4 py-3 text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <Link href={`/admin/faqs/${faq.id}/edit`}>
+                                                        <Button variant="ghost" size="icon"><Pencil className="h-4 w-4" /></Button>
+                                                    </Link>
+                                                    <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(faq)}>
+                                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                                    </Button>
+                                                </div>
+                                            </td>
+                                        </>
+                                    );
+                                }}
+                            />
                         </table>
                     </div>
                 )}
             </div>
-
-            <DeleteConfirmDialog open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={handleDelete} processing={processing} />
+            <DeleteConfirmDialog
+                open={!!deleteTarget}
+                onClose={() => setDeleteTarget(null)}
+                deleteUrl={deleteTarget ? `/admin/faqs/${deleteTarget.id}` : ''}
+                title="კითხვის წაშლა"
+                description={`დარწმუნებული ხართ რომ გსურთ წაშლა?`}
+            />
         </AppLayout>
     );
 }

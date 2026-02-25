@@ -36,6 +36,7 @@ class AboutPage extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('image')->singleFile();
+        $this->addMediaCollection('gallery');
         $this->addMediaCollection('og_image')->singleFile();
     }
 

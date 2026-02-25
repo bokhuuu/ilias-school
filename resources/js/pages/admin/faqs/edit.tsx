@@ -1,22 +1,27 @@
-import { Head, useForm, Link } from '@inertiajs/react';
-import type { FormEvent } from 'react';
+import { type FormEvent } from 'react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import AppLayout from '@/layouts/app-layout';
 import { FlashMessage } from '@/components/admin/flash-message';
-import InputError from '@/components/input-error';
+import { TiptapEditor } from '@/components/admin/tiptap-editor';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AppLayout from '@/layouts/app-layout';
+import InputError from '@/components/input-error';
 import type { Faq } from '@/types/models';
 
-interface Props { faq: { data: Faq }; }
+interface Props {
+    faq: { data: Faq };
+}
 
-export default function FaqsEdit({ faq: { data: faq } }: Props) {
+export default function FaqEdit({ faq: { data: faq } }: Props) {
+    const breadcrumbs = [
+        { title: 'დეშბორდი', href: '/admin/dashboard' },
+        { title: 'FAQ', href: '/admin/faqs' },
+        { title: 'რედაქტირება', href: '#' },
+    ];
+
     const { data, setData, put, processing, errors } = useForm({
-        question: faq.question,
-        answer: faq.answer,
-        is_active: faq.is_active,
-        sort_order: faq.sort_order,
+        question: faq.question || '', answer: faq.answer || '', is_active: faq.is_active, sort_order: faq.sort_order || 0,
     });
 
     function submit(e: FormEvent) {
@@ -25,39 +30,34 @@ export default function FaqsEdit({ faq: { data: faq } }: Props) {
     }
 
     return (
-        <AppLayout breadcrumbs={[
-            { title: 'დეშბორდი', href: '/admin/dashboard' },
-            { title: 'FAQ', href: '/admin/faqs' },
-            { title: 'რედაქტირება', href: `/admin/faqs/${faq.id}/edit` },
-        ]}>
-            <Head title="FAQ რედაქტირება" />
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="კითხვის რედაქტირება" />
             <FlashMessage />
-            <div className="p-6 max-w-xl">
-                <h1 className="text-2xl font-bold mb-6">კითხვის რედაქტირება</h1>
-                <form onSubmit={submit} className="space-y-4">
-                    <div>
-                        <Label htmlFor="question">კითხვა *</Label>
-                        <Input id="question" value={data.question} onChange={(e) => setData('question', e.target.value)} className="mt-1" />
-                        <InputError message={errors.question} />
-                    </div>
-                    <div>
-                        <Label htmlFor="answer">პასუხი *</Label>
-                        <textarea id="answer" value={data.answer} onChange={(e) => setData('answer', e.target.value)} rows={6} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
-                        <InputError message={errors.answer} />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
+            <div className="p-6">
+                <h1 className="mb-6 text-2xl font-bold">კითხვის რედაქტირება</h1>
+                <form onSubmit={submit} className="max-w-2xl space-y-6">
+                    <div className="rounded-lg border p-6 space-y-4">
                         <div>
-                            <Label htmlFor="sort_order">რიგითობა</Label>
-                            <Input id="sort_order" type="number" value={data.sort_order} onChange={(e) => setData('sort_order', parseInt(e.target.value) || 0)} className="mt-1" />
+                            <Label htmlFor="question">კითხვა *</Label>
+                            <Input id="question" value={data.question} onChange={(e) => setData('question', e.target.value)} />
+                            <InputError message={errors.question} />
                         </div>
-                        <div className="flex items-center gap-2 pt-6">
-                            <Checkbox id="is_active" checked={data.is_active} onCheckedChange={(c) => setData('is_active', c as boolean)} />
-                            <Label htmlFor="is_active">აქტიური</Label>
+                        <div>
+                            <Label>პასუხი *</Label>
+                            <TiptapEditor content={data.answer} onChange={(html) => setData('answer', html)} placeholder="პასუხი..." />
+                            <InputError message={errors.answer} />
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <Input type="number" className="w-24" value={data.sort_order} onChange={(e) => setData('sort_order', Number(e.target.value))} />
+                            <label className="flex items-center gap-2">
+                                <input type="checkbox" checked={data.is_active} onChange={(e) => setData('is_active', e.target.checked)} />
+                                აქტიური
+                            </label>
                         </div>
                     </div>
                     <div className="flex gap-3">
-                        <Button type="submit" disabled={processing}>{processing ? 'ინახება...' : 'განახლება'}</Button>
-                        <Button variant="outline" asChild><Link href="/admin/faqs">გაუქმება</Link></Button>
+                        <Button type="submit" disabled={processing}>{processing ? 'იტვირთება...' : 'განახლება'}</Button>
+                        <Link href="/admin/faqs"><Button variant="outline" type="button">გაუქმება</Button></Link>
                     </div>
                 </form>
             </div>

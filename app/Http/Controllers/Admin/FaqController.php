@@ -78,4 +78,11 @@ class FaqController extends Controller
 
         return back()->with('success', 'თანმიმდევრობა განახლდა.');
     }
+
+
+    public function toggleActive(Faq $faq)
+    {
+        $faq->update(['is_active' => !$faq->is_active]);
+        return back();
+    }
 }
