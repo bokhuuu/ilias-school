@@ -1,5 +1,7 @@
-import { Head, useForm } from '@inertiajs/react';
-import type { FormEvent } from 'react';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
+import { Copy, Key, Trash2 } from 'lucide-react';
+import { type FormEvent, useState } from 'react';
 import { FlashMessage } from '@/components/admin/flash-message';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,11 +9,20 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import type { SiteSettings } from '@/types/models';
 
-interface Props {
-    settings: SiteSettings;
+interface Token {
+    id: number;
+    name: string;
+    created_at: string;
+    last_used_at: string | null;
 }
 
-export default function SettingsEdit({ settings }: Props) {
+interface Props {
+    settings: SiteSettings;
+    tokens: Token[];
+    newToken?: string;
+}
+
+export default function SettingsEdit({ settings, tokens, newToken }: Props) {
     const { data, setData, put, processing } = useForm({
         site_name: settings.site_name || '',
         email: settings.email || '',
@@ -22,9 +33,34 @@ export default function SettingsEdit({ settings }: Props) {
         registration_url: settings.registration_url || '',
     });
 
+    const [tokenName, setTokenName] = useState('');
+    const [copied, setCopied] = useState(false);
+
     function submit(e: FormEvent) {
         e.preventDefault();
         put('/admin/settings');
+    }
+
+    function createToken(e: FormEvent) {
+        e.preventDefault();
+        if (!tokenName.trim()) return;
+        router.post('/admin/settings/tokens', { name: tokenName }, {
+            preserveScroll: true,
+            onSuccess: () => setTokenName(''),
+        });
+    }
+
+    function revokeToken(id: number) {
+        if (!confirm('დარწმუნებული ხართ?')) return;
+        router.delete(`/admin/settings/tokens/${id}`, { preserveScroll: true });
+    }
+
+    function copyToken() {
+        if (newToken) {
+            navigator.clipboard.writeText(newToken);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
     }
 
     return (
@@ -81,6 +117,64 @@ export default function SettingsEdit({ settings }: Props) {
                         {processing ? 'ინახება...' : 'განახლება'}
                     </Button>
                 </form>
+
+                <div className="mt-8 rounded-lg border p-6 space-y-4">
+                    <div className="flex items-center gap-2">
+                        <Key className="h-5 w-5" />
+                        <h2 className="text-lg font-semibold">API ტოკენები</h2>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                        შექმენით ტოკენი ფრონტენდ დეველოპერისთვის API-ზე წვდომისთვის.
+                    </p>
+
+                    {newToken && (
+                        <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950">
+                            <p className="mb-2 text-sm font-medium text-green-800 dark:text-green-200">
+                                ტოკენი შეიქმნა. დააკოპირეთ ახლავე — მეორედ ვეღარ ნახავთ!
+                            </p>
+                            <div className="flex items-center gap-2">
+                                <code className="flex-1 break-all rounded bg-white p-2 text-xs dark:bg-black">{newToken}</code>
+                                <Button type="button" variant="outline" size="sm" onClick={copyToken}>
+                                    <Copy className="mr-1 h-3 w-3" />
+                                    {copied ? 'დაკოპირდა!' : 'კოპირება'}
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    <form onSubmit={createToken} className="flex items-end gap-2">
+                        <div className="flex-1">
+                            <Label htmlFor="token_name">ტოკენის სახელი</Label>
+                            <Input
+                                id="token_name"
+                                value={tokenName}
+                                onChange={(e) => setTokenName(e.target.value)}
+                                placeholder="მაგ: frontend-app"
+                                className="mt-1"
+                            />
+                        </div>
+                        <Button type="submit" disabled={!tokenName.trim()}>შექმნა</Button>
+                    </form>
+
+                    {tokens.length > 0 && (
+                        <div className="space-y-2">
+                            {tokens.map((token) => (
+                                <div key={token.id} className="flex items-center justify-between rounded-lg border px-4 py-3">
+                                    <div>
+                                        <p className="font-medium text-sm">{token.name}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                            შექმნილი: {new Date(token.created_at).toLocaleDateString('ka-GE')}
+                                            {token.last_used_at && ` · ბოლოს: ${new Date(token.last_used_at).toLocaleDateString('ka-GE')}`}
+                                        </p>
+                                    </div>
+                                    <Button type="button" variant="ghost" size="icon" onClick={() => revokeToken(token.id)}>
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </AppLayout>
     );

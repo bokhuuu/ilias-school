@@ -42,6 +42,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::get('settings', [SiteSettingController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SiteSettingController::class, 'update'])->name('settings.update');
+
+    Route::post('settings/tokens', [SiteSettingController::class, 'createToken'])->name('settings.create-token');
+    Route::delete('settings/tokens/{token}', [SiteSettingController::class, 'revokeToken'])->name('settings.revoke-token');
 });
 
 
