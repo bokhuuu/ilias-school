@@ -1,5 +1,17 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, GraduationCap, LayoutGrid, List, MessageSquare, Settings, Tags, Users, Info, Layers } from 'lucide-react';
+import {
+    BookOpen,
+    Folder,
+    GraduationCap,
+    LayoutGrid,
+    List,
+    MessageSquare,
+    Settings,
+    Tags,
+    Users,
+    Info,
+    Layers,
+} from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -59,11 +71,11 @@ const mainNavItems: NavItem[] = [
 ];
 
 const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/bokhuuu/ilias-school',
-        icon: Folder,
-    },
+    // {
+    //     title: 'Repository',
+    //     href: 'https://github.com/bokhuuu/ilias-school',
+    //     icon: Folder,
+    // },
 ];
 
 export function AppSidebar() {
