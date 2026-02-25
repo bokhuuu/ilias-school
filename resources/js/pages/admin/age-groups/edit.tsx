@@ -1,12 +1,12 @@
-import { useState, type FormEvent } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import { useState, type FormEvent } from 'react';
 import { FlashMessage } from '@/components/admin/flash-message';
 import { TiptapEditor } from '@/components/admin/tiptap-editor';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import InputError from '@/components/input-error';
+import AppLayout from '@/layouts/app-layout';
 import type { AgeGroup } from '@/types/models';
 
 interface Props {

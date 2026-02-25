@@ -1,7 +1,7 @@
-import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { FlashMessage } from '@/components/admin/flash-message';
 import { Users, GraduationCap, MessageSquare } from 'lucide-react';
+import { FlashMessage } from '@/components/admin/flash-message';
+import AppLayout from '@/layouts/app-layout';
 import type { DashboardStats } from '@/types/models';
 
 interface Props {
@@ -49,13 +49,11 @@ function StatCard({
     value,
     total,
     icon,
-    color,
 }: {
     title: string;
     value: number;
     total?: number;
     icon: React.ReactNode;
-    color: string;
 }) {
     return (
         <div className="rounded-xl border bg-card p-6 shadow-sm">

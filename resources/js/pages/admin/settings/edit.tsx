@@ -1,4 +1,4 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import { Copy, Key, Trash2 } from 'lucide-react';
 import { type FormEvent, useState } from 'react';

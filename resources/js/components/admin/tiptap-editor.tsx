@@ -1,9 +1,8 @@
-import { useCallback, useState } from 'react';
-import { EditorContent, useEditor } from '@tiptap/react';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
-import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import {
     Bold,
     Check,
@@ -20,6 +19,7 @@ import {
     Unlink,
     X,
 } from 'lucide-react';
+import { useCallback, useState } from 'react';
 
 interface Props {
     content: string;

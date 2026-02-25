@@ -1,12 +1,12 @@
-import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
-import AppLayout from '@/layouts/app-layout';
+import { useState } from 'react';
 import { ActiveToggle } from '@/components/admin/active-toggle';
 import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
 import { FlashMessage } from '@/components/admin/flash-message';
 import { SortableTableBody } from '@/components/admin/sortable-table';
 import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/app-layout';
 import type { AgeGroup } from '@/types/models';
 
 interface Props {
