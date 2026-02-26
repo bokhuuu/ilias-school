@@ -14,7 +14,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'admin@iliaschool.ge'],
             [
                 'name' => 'Admin',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('iliasschool@2026'),
                 'email_verified_at' => now(),
             ]
         );
