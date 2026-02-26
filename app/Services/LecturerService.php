@@ -89,7 +89,7 @@ class LecturerService
         }
 
         if (!empty($data['gallery_remove'])) {
-            $lecturer->media()->whereIn('id', $data['gallery_remove'])->each->delete();
+            $lecturer->media()->whereIn('id', $data['gallery_remove'])->get()->each->delete();
         }
 
         if (!empty($data['gallery_order'])) {

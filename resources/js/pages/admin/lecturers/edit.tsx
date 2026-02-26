@@ -39,7 +39,9 @@ export default function LecturerEdit({ lecturer: { data: lecturer } }: Props) {
     });
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(lecturer.gallery || []);
+    const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(
+        lecturer.gallery || [],
+    );
 
     function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0] || null;
@@ -54,12 +56,18 @@ export default function LecturerEdit({ lecturer: { data: lecturer } }: Props) {
 
     function handleGalleryReorder(images: GalleryImage[]) {
         setGalleryImages(images);
-        setData('gallery_order', images.map((img) => img.id));
+        setData(
+            'gallery_order',
+            images.map((img) => img.id),
+        );
     }
 
     function submit(e: FormEvent) {
         e.preventDefault();
-        post(`/admin/lecturers/${lecturer.slug}`, { forceFormData: true });
+        post(`/admin/lecturers/${lecturer.slug}`, {
+            forceFormData: true,
+            preserveState: false,
+        });
     }
 
     return (
@@ -68,21 +76,37 @@ export default function LecturerEdit({ lecturer: { data: lecturer } }: Props) {
             <FlashMessage />
 
             <div className="p-6">
-                <h1 className="mb-6 text-2xl font-bold">ლექტორის რედაქტირება</h1>
+                <h1 className="mb-6 text-2xl font-bold">
+                    ლექტორის რედაქტირება
+                </h1>
 
                 <form onSubmit={submit} className="max-w-2xl space-y-6">
-                    <div className="rounded-lg border p-6 space-y-4">
-                        <h2 className="text-lg font-semibold">ძირითადი ინფორმაცია</h2>
+                    <div className="space-y-4 rounded-lg border p-6">
+                        <h2 className="text-lg font-semibold">
+                            ძირითადი ინფორმაცია
+                        </h2>
 
                         <div>
                             <Label htmlFor="full_name">სახელი და გვარი *</Label>
-                            <Input id="full_name" value={data.full_name} onChange={(e) => setData('full_name', e.target.value)} />
+                            <Input
+                                id="full_name"
+                                value={data.full_name}
+                                onChange={(e) =>
+                                    setData('full_name', e.target.value)
+                                }
+                            />
                             <InputError message={errors.full_name} />
                         </div>
 
                         <div>
                             <Label htmlFor="title">თანამდებობა</Label>
-                            <Input id="title" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                            <Input
+                                id="title"
+                                value={data.title}
+                                onChange={(e) =>
+                                    setData('title', e.target.value)
+                                }
+                            />
                             <InputError message={errors.title} />
                         </div>
 
@@ -92,69 +116,124 @@ export default function LecturerEdit({ lecturer: { data: lecturer } }: Props) {
                                 className="w-full rounded-md border bg-background px-3 py-2 text-sm"
                                 rows={2}
                                 value={data.short_bio}
-                                onChange={(e) => setData('short_bio', e.target.value)}
+                                onChange={(e) =>
+                                    setData('short_bio', e.target.value)
+                                }
                             />
                             <InputError message={errors.short_bio} />
                         </div>
 
                         <div>
                             <Label>ბიოგრაფია</Label>
-                            <TiptapEditor content={data.bio} onChange={(html) => setData('bio', html)} placeholder="ლექტორის ბიოგრაფია..." />
+                            <TiptapEditor
+                                content={data.bio}
+                                onChange={(html) => setData('bio', html)}
+                                placeholder="ლექტორის ბიოგრაფია..."
+                            />
                             <InputError message={errors.bio} />
                         </div>
 
                         <div className="flex items-center gap-4">
                             <label className="flex items-center gap-2">
-                                <input type="checkbox" checked={data.is_active} onChange={(e) => setData('is_active', e.target.checked)} />
+                                <input
+                                    type="checkbox"
+                                    checked={data.is_active}
+                                    onChange={(e) =>
+                                        setData('is_active', e.target.checked)
+                                    }
+                                />
                                 აქტიური
                             </label>
                         </div>
                     </div>
 
-                    <div className="rounded-lg border p-6 space-y-4">
+                    <div className="space-y-4 rounded-lg border p-6">
                         <h2 className="text-lg font-semibold">სურათი</h2>
                         <div>
                             <Label htmlFor="image">პროფილის სურათი</Label>
                             {lecturer.image && !imagePreview && (
-                                <img src={lecturer.image_thumb || lecturer.image} alt="" className="mb-2 h-24 w-24 rounded-lg object-cover" />
+                                <img
+                                    src={lecturer.image_thumb || lecturer.image}
+                                    alt=""
+                                    className="mb-2 h-24 w-24 rounded-lg object-cover"
+                                />
                             )}
-                            <Input id="image" type="file" accept="image/*" onChange={handleImageChange} />
-                            {imagePreview && <img src={imagePreview} alt="Preview" className="mt-2 h-24 w-24 rounded-lg object-cover" />}
+                            <Input
+                                id="image"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                            />
+                            {imagePreview && (
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="mt-2 h-24 w-24 rounded-lg object-cover"
+                                />
+                            )}
                             <InputError message={errors.image} />
                         </div>
                     </div>
 
-                    <div className="rounded-lg border p-6 space-y-4">
+                    <div className="space-y-4 rounded-lg border p-6">
                         <h2 className="text-lg font-semibold">გალერეა</h2>
                         <GalleryManager
                             images={galleryImages}
                             onRemove={handleGalleryRemove}
                             onReorder={handleGalleryReorder}
                             newFiles={data.gallery}
-                            onNewFilesChange={(files) => setData('gallery', files)}
+                            onNewFilesChange={(files) =>
+                                setData('gallery', files)
+                            }
                         />
                     </div>
 
-                    <div className="rounded-lg border p-6 space-y-4">
+                    <div className="space-y-4 rounded-lg border p-6">
                         <h2 className="text-lg font-semibold">SEO</h2>
                         <div>
                             <Label htmlFor="meta_title">Meta Title</Label>
-                            <Input id="meta_title" value={data.meta_title} onChange={(e) => setData('meta_title', e.target.value)} />
+                            <Input
+                                id="meta_title"
+                                value={data.meta_title}
+                                onChange={(e) =>
+                                    setData('meta_title', e.target.value)
+                                }
+                            />
                         </div>
                         <div>
-                            <Label htmlFor="meta_description">Meta Description</Label>
+                            <Label htmlFor="meta_description">
+                                Meta Description
+                            </Label>
                             <textarea
                                 id="meta_description"
                                 className="w-full rounded-md border bg-background px-3 py-2 text-sm"
                                 rows={2}
                                 value={data.meta_description}
-                                onChange={(e) => setData('meta_description', e.target.value)}
+                                onChange={(e) =>
+                                    setData('meta_description', e.target.value)
+                                }
                             />
                         </div>
                         <div>
                             <Label htmlFor="og_image">OG Image</Label>
-                            {lecturer.og_image && <img src={lecturer.og_image} alt="" className="mb-2 h-16 rounded" />}
-                            <Input id="og_image" type="file" accept="image/*" onChange={(e) => setData('og_image', e.target.files?.[0] || null)} />
+                            {lecturer.og_image && (
+                                <img
+                                    src={lecturer.og_image}
+                                    alt=""
+                                    className="mb-2 h-16 rounded"
+                                />
+                            )}
+                            <Input
+                                id="og_image"
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setData(
+                                        'og_image',
+                                        e.target.files?.[0] || null,
+                                    )
+                                }
+                            />
                         </div>
                     </div>
 
@@ -163,7 +242,9 @@ export default function LecturerEdit({ lecturer: { data: lecturer } }: Props) {
                             {processing ? 'იტვირთება...' : 'განახლება'}
                         </Button>
                         <Link href="/admin/lecturers">
-                            <Button variant="outline" type="button">გაუქმება</Button>
+                            <Button variant="outline" type="button">
+                                გაუქმება
+                            </Button>
                         </Link>
                     </div>
                 </form>

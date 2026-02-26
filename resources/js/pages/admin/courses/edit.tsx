@@ -9,7 +9,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import type { Category, Course, GalleryImage, Lecturer, SyllabusItemForm } from '@/types/models';
+import type {
+    Category,
+    Course,
+    GalleryImage,
+    Lecturer,
+    SyllabusItemForm,
+} from '@/types/models';
 
 interface Props {
     course: { data: Course };
@@ -17,7 +23,11 @@ interface Props {
     categories: { data: Category[] };
 }
 
-export default function CourseEdit({ course: { data: course }, lecturers: { data: lecturers }, categories: { data: categories } }: Props) {
+export default function CourseEdit({
+    course: { data: course },
+    lecturers: { data: lecturers },
+    categories: { data: categories },
+}: Props) {
     const breadcrumbs = [
         { title: 'დეშბორდი', href: '/admin/dashboard' },
         { title: 'კურსები', href: '/admin/courses' },
@@ -29,7 +39,6 @@ export default function CourseEdit({ course: { data: course }, lecturers: { data
         title: course.title || '',
         description: course.description || '',
         short_description: course.short_description || '',
-        age_group: course.age_group || '',
         format: course.format || '',
         duration: course.duration || '',
         video_url: course.video_url || '',
@@ -54,7 +63,9 @@ export default function CourseEdit({ course: { data: course }, lecturers: { data
     });
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(course.gallery || []);
+    const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(
+        course.gallery || [],
+    );
 
     function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0] || null;
@@ -69,26 +80,53 @@ export default function CourseEdit({ course: { data: course }, lecturers: { data
 
     function handleGalleryReorder(images: GalleryImage[]) {
         setGalleryImages(images);
-        setData('gallery_order', images.map((img) => img.id));
+        setData(
+            'gallery_order',
+            images.map((img) => img.id),
+        );
     }
 
     function toggleLecturer(id: number) {
-        setData('lecturer_ids', data.lecturer_ids.includes(id) ? data.lecturer_ids.filter((l) => l !== id) : [...data.lecturer_ids, id]);
+        setData(
+            'lecturer_ids',
+            data.lecturer_ids.includes(id)
+                ? data.lecturer_ids.filter((l) => l !== id)
+                : [...data.lecturer_ids, id],
+        );
     }
 
     function toggleCategory(id: number) {
-        setData('category_ids', data.category_ids.includes(id) ? data.category_ids.filter((c) => c !== id) : [...data.category_ids, id]);
+        setData(
+            'category_ids',
+            data.category_ids.includes(id)
+                ? data.category_ids.filter((c) => c !== id)
+                : [...data.category_ids, id],
+        );
     }
 
     function addSyllabusItem() {
-        setData('syllabus_items', [...data.syllabus_items, { meeting_number: data.syllabus_items.length + 1, title: '', sort_order: data.syllabus_items.length }]);
+        setData('syllabus_items', [
+            ...data.syllabus_items,
+            {
+                meeting_number: data.syllabus_items.length + 1,
+                title: '',
+                sort_order: data.syllabus_items.length,
+            },
+        ]);
     }
 
     function removeSyllabusItem(index: number) {
-        setData('syllabus_items', data.syllabus_items.filter((_, i) => i !== index));
+        setData(
+            'syllabus_items',
+            data.syllabus_items.filter((_, i) => i !== index),
+        );
     }
 
-    function updateSyllabusItem(index: number, field: keyof SyllabusItemForm, value: string | number) {
+    function updateSyllabusItem(
+        index: number,
+        field: keyof SyllabusItemForm,
+        value: string | number,
+    ) {
         const items = [...data.syllabus_items];
         items[index] = { ...items[index], [field]: value };
         setData('syllabus_items', items);
@@ -98,7 +136,9 @@ export default function CourseEdit({ course: { data: course }, lecturers: { data
         e.preventDefault();
         transform((d) => ({
             ...d,
-            syllabus_items: d.syllabus_items.filter((item) => item.title.trim() !== ''),
+            syllabus_items: d.syllabus_items.filter(
+                (item) => item.title.trim() !== '',
+            ),
         }));
         post(`/admin/courses/${course.slug}`, { forceFormData: true });
     }
@@ -112,66 +152,124 @@ export default function CourseEdit({ course: { data: course }, lecturers: { data
                 <h1 className="mb-6 text-2xl font-bold">კურსის რედაქტირება</h1>
 
                 <form onSubmit={submit} className="max-w-2xl space-y-6">
-                    <div className="rounded-lg border p-6 space-y-4">
-                        <h2 className="text-lg font-semibold">ძირითადი ინფორმაცია</h2>
+                    <div className="space-y-4 rounded-lg border p-6">
+                        <h2 className="text-lg font-semibold">
+                            ძირითადი ინფორმაცია
+                        </h2>
 
                         <div>
                             <Label htmlFor="title">სათაური *</Label>
-                            <Input id="title" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                            <Input
+                                id="title"
+                                value={data.title}
+                                onChange={(e) =>
+                                    setData('title', e.target.value)
+                                }
+                            />
                             <InputError message={errors.title} />
                         </div>
 
                         <div>
                             <Label>მოკლე აღწერა</Label>
-                            <textarea className="w-full rounded-md border bg-background px-3 py-2 text-sm" rows={2} value={data.short_description} onChange={(e) => setData('short_description', e.target.value)} />
+                            <textarea
+                                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                                rows={2}
+                                value={data.short_description}
+                                onChange={(e) =>
+                                    setData('short_description', e.target.value)
+                                }
+                            />
                         </div>
 
                         <div>
                             <Label>სრული აღწერა</Label>
-                            <TiptapEditor content={data.description} onChange={(html) => setData('description', html)} placeholder="კურსის აღწერა..." />
+                            <TiptapEditor
+                                content={data.description}
+                                onChange={(html) =>
+                                    setData('description', html)
+                                }
+                                placeholder="კურსის აღწერა..."
+                            />
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4">
-                            <div>
-                                <Label>ასაკობრივი ჯგუფი</Label>
-                                <Input value={data.age_group} onChange={(e) => setData('age_group', e.target.value)} />
-                            </div>
+                        <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label>ფორმატი</Label>
-                                <Input value={data.format} onChange={(e) => setData('format', e.target.value)} />
+                                <Input
+                                    value={data.format}
+                                    onChange={(e) =>
+                                        setData('format', e.target.value)
+                                    }
+                                />
                             </div>
                             <div>
                                 <Label>ხანგრძლივობა</Label>
-                                <Input value={data.duration} onChange={(e) => setData('duration', e.target.value)} />
+                                <Input
+                                    value={data.duration}
+                                    onChange={(e) =>
+                                        setData('duration', e.target.value)
+                                    }
+                                />
                             </div>
                         </div>
 
                         <div>
                             <Label>ვიდეოს URL</Label>
-                            <Input value={data.video_url} onChange={(e) => setData('video_url', e.target.value)} placeholder="https://youtube.com/..." />
+                            <Input
+                                value={data.video_url}
+                                onChange={(e) =>
+                                    setData('video_url', e.target.value)
+                                }
+                                placeholder="https://youtube.com/..."
+                            />
                         </div>
 
                         <div className="flex items-center gap-4">
                             <label className="flex items-center gap-2">
-                                <input type="checkbox" checked={data.is_active} onChange={(e) => setData('is_active', e.target.checked)} />
+                                <input
+                                    type="checkbox"
+                                    checked={data.is_active}
+                                    onChange={(e) =>
+                                        setData('is_active', e.target.checked)
+                                    }
+                                />
                                 აქტიური
                             </label>
                             <label className="flex items-center gap-2">
-                                <input type="checkbox" checked={data.is_featured} onChange={(e) => setData('is_featured', e.target.checked)} />
+                                <input
+                                    type="checkbox"
+                                    checked={data.is_featured}
+                                    onChange={(e) =>
+                                        setData('is_featured', e.target.checked)
+                                    }
+                                />
                                 გამორჩეული სლაიდერში
                             </label>
                         </div>
                     </div>
 
-                    <div className="rounded-lg border p-6 space-y-3">
+                    <div className="space-y-3 rounded-lg border p-6">
                         <h2 className="text-lg font-semibold">ლექტორები</h2>
                         {lecturers.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">ჯერ არ არის ლექტორი</p>
+                            <p className="text-sm text-muted-foreground">
+                                ჯერ არ არის ლექტორი
+                            </p>
                         ) : (
                             <div className="space-y-2">
                                 {lecturers.map((lecturer) => (
-                                    <label key={lecturer.id} className="flex items-center gap-2">
-                                        <input type="checkbox" checked={data.lecturer_ids.includes(lecturer.id)} onChange={() => toggleLecturer(lecturer.id)} />
+                                    <label
+                                        key={lecturer.id}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={data.lecturer_ids.includes(
+                                                lecturer.id,
+                                            )}
+                                            onChange={() =>
+                                                toggleLecturer(lecturer.id)
+                                            }
+                                        />
                                         {lecturer.full_name}
                                     </label>
                                 ))}
@@ -179,15 +277,28 @@ export default function CourseEdit({ course: { data: course }, lecturers: { data
                         )}
                     </div>
 
-                    <div className="rounded-lg border p-6 space-y-3">
+                    <div className="space-y-3 rounded-lg border p-6">
                         <h2 className="text-lg font-semibold">კატეგორიები</h2>
                         {categories.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">ჯერ არ არის კატეგორია</p>
+                            <p className="text-sm text-muted-foreground">
+                                ჯერ არ არის კატეგორია
+                            </p>
                         ) : (
                             <div className="space-y-2">
                                 {categories.map((category) => (
-                                    <label key={category.id} className="flex items-center gap-2">
-                                        <input type="checkbox" checked={data.category_ids.includes(category.id)} onChange={() => toggleCategory(category.id)} />
+                                    <label
+                                        key={category.id}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={data.category_ids.includes(
+                                                category.id,
+                                            )}
+                                            onChange={() =>
+                                                toggleCategory(category.id)
+                                            }
+                                        />
                                         {category.name}
                                     </label>
                                 ))}
@@ -195,61 +306,144 @@ export default function CourseEdit({ course: { data: course }, lecturers: { data
                         )}
                     </div>
 
-                    <div className="rounded-lg border p-6 space-y-3">
+                    <div className="space-y-3 rounded-lg border p-6">
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-semibold">სილაბუსი</h2>
-                            <Button type="button" variant="outline" size="sm" onClick={addSyllabusItem}>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={addSyllabusItem}
+                            >
                                 <Plus className="mr-1 h-4 w-4" /> შეხვედრა
                             </Button>
                         </div>
                         {data.syllabus_items.map((item, index) => (
-                            <div key={index} className="flex items-center gap-2">
-                                <span className="text-sm text-muted-foreground">N°</span>
-                                <Input className="w-16" type="number" value={item.meeting_number} onChange={(e) => updateSyllabusItem(index, 'meeting_number', Number(e.target.value))} />
-                                <span className="text-sm text-muted-foreground">სათაური</span>
-                                <Input className="flex-1" value={item.title} onChange={(e) => updateSyllabusItem(index, 'title', e.target.value)} />
-                                <Button type="button" variant="ghost" size="icon" onClick={() => removeSyllabusItem(index)}>
+                            <div
+                                key={index}
+                                className="flex items-center gap-2"
+                            >
+                                <span className="text-sm text-muted-foreground">
+                                    N°
+                                </span>
+                                <Input
+                                    className="w-16"
+                                    type="number"
+                                    value={item.meeting_number}
+                                    onChange={(e) =>
+                                        updateSyllabusItem(
+                                            index,
+                                            'meeting_number',
+                                            Number(e.target.value),
+                                        )
+                                    }
+                                />
+                                <span className="text-sm text-muted-foreground">
+                                    სათაური
+                                </span>
+                                <Input
+                                    className="flex-1"
+                                    value={item.title}
+                                    onChange={(e) =>
+                                        updateSyllabusItem(
+                                            index,
+                                            'title',
+                                            e.target.value,
+                                        )
+                                    }
+                                />
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => removeSyllabusItem(index)}
+                                >
                                     <Trash2 className="h-4 w-4 text-destructive" />
                                 </Button>
                             </div>
                         ))}
                     </div>
 
-                    <div className="rounded-lg border p-6 space-y-4">
+                    <div className="space-y-4 rounded-lg border p-6">
                         <h2 className="text-lg font-semibold">სურათი</h2>
                         <div>
                             <Label>კურსის სურათი</Label>
-                            {course.image && !imagePreview && <img src={course.image_thumb || course.image} alt="" className="mb-2 h-24 rounded-lg object-cover" />}
-                            <Input type="file" accept="image/*" onChange={handleImageChange} />
-                            {imagePreview && <img src={imagePreview} alt="Preview" className="mt-2 h-24 rounded-lg object-cover" />}
+                            {course.image && !imagePreview && (
+                                <img
+                                    src={course.image_thumb || course.image}
+                                    alt=""
+                                    className="mb-2 h-24 rounded-lg object-cover"
+                                />
+                            )}
+                            <Input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                            />
+                            {imagePreview && (
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="mt-2 h-24 rounded-lg object-cover"
+                                />
+                            )}
                         </div>
                     </div>
 
-                    <div className="rounded-lg border p-6 space-y-4">
+                    <div className="space-y-4 rounded-lg border p-6">
                         <h2 className="text-lg font-semibold">გალერეა</h2>
                         <GalleryManager
                             images={galleryImages}
                             onRemove={handleGalleryRemove}
                             onReorder={handleGalleryReorder}
                             newFiles={data.gallery}
-                            onNewFilesChange={(files) => setData('gallery', files)}
+                            onNewFilesChange={(files) =>
+                                setData('gallery', files)
+                            }
                         />
                     </div>
 
-                    <div className="rounded-lg border p-6 space-y-4">
+                    <div className="space-y-4 rounded-lg border p-6">
                         <h2 className="text-lg font-semibold">SEO</h2>
                         <div>
                             <Label>Meta Title</Label>
-                            <Input value={data.meta_title} onChange={(e) => setData('meta_title', e.target.value)} />
+                            <Input
+                                value={data.meta_title}
+                                onChange={(e) =>
+                                    setData('meta_title', e.target.value)
+                                }
+                            />
                         </div>
                         <div>
                             <Label>Meta Description</Label>
-                            <textarea className="w-full rounded-md border bg-background px-3 py-2 text-sm" rows={2} value={data.meta_description} onChange={(e) => setData('meta_description', e.target.value)} />
+                            <textarea
+                                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                                rows={2}
+                                value={data.meta_description}
+                                onChange={(e) =>
+                                    setData('meta_description', e.target.value)
+                                }
+                            />
                         </div>
                         <div>
                             <Label>OG Image</Label>
-                            {course.og_image && <img src={course.og_image} alt="" className="mb-2 h-16 rounded" />}
-                            <Input type="file" accept="image/*" onChange={(e) => setData('og_image', e.target.files?.[0] || null)} />
+                            {course.og_image && (
+                                <img
+                                    src={course.og_image}
+                                    alt=""
+                                    className="mb-2 h-16 rounded"
+                                />
+                            )}
+                            <Input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setData(
+                                        'og_image',
+                                        e.target.files?.[0] || null,
+                                    )
+                                }
+                            />
                         </div>
                     </div>
 
@@ -258,7 +452,9 @@ export default function CourseEdit({ course: { data: course }, lecturers: { data
                             {processing ? 'იტვირთება...' : 'განახლება'}
                         </Button>
                         <Link href="/admin/courses">
-                            <Button variant="outline" type="button">გაუქმება</Button>
+                            <Button variant="outline" type="button">
+                                გაუქმება
+                            </Button>
                         </Link>
                     </div>
                 </form>

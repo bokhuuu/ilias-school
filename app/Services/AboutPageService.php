@@ -69,7 +69,7 @@ class AboutPageService
         }
 
         if (!empty($data['gallery_remove'])) {
-            $aboutPage->media()->whereIn('id', $data['gallery_remove'])->each->delete();
+            $aboutPage->media()->whereIn('id', $data['gallery_remove'])->get()->each->delete();
         }
 
         if (!empty($data['gallery_order'])) {

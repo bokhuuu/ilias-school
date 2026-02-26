@@ -150,7 +150,7 @@ class CourseService
         }
 
         if (!empty($data['gallery_remove'])) {
-            $course->media()->whereIn('id', $data['gallery_remove'])->each->delete();
+            $course->media()->whereIn('id', $data['gallery_remove'])->get()->each->delete();
         }
 
         if (!empty($data['gallery_order'])) {

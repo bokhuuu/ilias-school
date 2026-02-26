@@ -30,7 +30,7 @@ class LecturerResource extends JsonResource
             'gallery' => $this->getMedia('gallery')->map(fn($media) => [
                 'id' => $media->id,
                 'url' => $media->getUrl(),
-                'thumb' => $media->getUrl('thumb'),
+                'thumb' => $media->hasGeneratedConversion('thumb') ? $media->getUrl('thumb') : $media->getUrl(),
                 'order' => $media->order_column,
             ])->sortBy('order')->values(),
 
