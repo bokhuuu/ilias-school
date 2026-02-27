@@ -1,8 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
-import { Copy, Key, Trash2 } from 'lucide-react';
+import { Copy, Key } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
-import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
 import { FlashMessage } from '@/components/admin/flash-message';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,7 +35,6 @@ export default function SettingsEdit({ settings, tokens, newToken }: Props) {
 
     const [tokenName, setTokenName] = useState('');
     const [copied, setCopied] = useState(false);
-    const [deleteTokenId, setDeleteTokenId] = useState<number | null>(null);
 
     function submit(e: FormEvent) {
         e.preventDefault();
@@ -182,10 +180,6 @@ export default function SettingsEdit({ settings, tokens, newToken }: Props) {
                         <Key className="h-5 w-5" />
                         <h2 className="text-lg font-semibold">API ტოკენები</h2>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                        შექმენით ტოკენი ფრონტენდ დეველოპერისთვის API-ზე
-                        წვდომისთვის.
-                    </p>
 
                     {newToken && (
                         <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950">
@@ -245,33 +239,13 @@ export default function SettingsEdit({ settings, tokens, newToken }: Props) {
                                             {new Date(
                                                 token.created_at,
                                             ).toLocaleDateString('ka-GE')}
-                                            {token.last_used_at &&
-                                                ` · ბოლოს: ${new Date(token.last_used_at).toLocaleDateString('ka-GE')}`}
                                         </p>
                                     </div>
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() =>
-                                            setDeleteTokenId(token.id)
-                                        }
-                                    >
-                                        <Trash2 className="h-4 w-4 text-destructive" />
-                                    </Button>
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
-
-                <DeleteConfirmDialog
-                    open={deleteTokenId !== null}
-                    onClose={() => setDeleteTokenId(null)}
-                    deleteUrl={`/admin/settings/tokens/${deleteTokenId}`}
-                    title="ტოკენის წაშლა"
-                    description="დარწმუნებული ხართ? ტოკენით API წვდომა გაუქმდება."
-                />
             </div>
         </AppLayout>
     );
