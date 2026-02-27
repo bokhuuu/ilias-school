@@ -51,6 +51,7 @@ export interface Course {
     lecturers?: Lecturer[];
     categories?: Category[];
     syllabus_items?: SyllabusItem[];
+    syllabus_items_count?: number;
     created_at: string;
     updated_at: string;
 }
@@ -60,12 +61,14 @@ export interface SyllabusItem {
     course_id: number;
     meeting_number: number;
     title: string;
+    content: string;
     sort_order: number;
 }
 
 export interface SyllabusItemForm {
     meeting_number: number;
     title: string;
+    content: string;
     sort_order: number;
 }
 

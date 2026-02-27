@@ -23,6 +23,8 @@ interface Props {
     categories: { data: Category[] };
 }
 
+type Tab = 'basic' | 'syllabus';
+
 export default function CourseEdit({
     course: { data: course },
     lecturers: { data: lecturers },
@@ -33,6 +35,8 @@ export default function CourseEdit({
         { title: 'კურსები', href: '/admin/courses' },
         { title: 'რედაქტირება', href: '#' },
     ];
+
+    const [activeTab, setActiveTab] = useState<Tab>('basic');
 
     const { data, setData, post, processing, errors, transform } = useForm({
         _method: 'PUT' as const,
@@ -58,6 +62,7 @@ export default function CourseEdit({
         syllabus_items: (course.syllabus_items || []).map((s) => ({
             meeting_number: s.meeting_number,
             title: s.title,
+            content: s.content || '',
             sort_order: s.sort_order,
         })) as SyllabusItemForm[],
     });
@@ -110,6 +115,7 @@ export default function CourseEdit({
             {
                 meeting_number: data.syllabus_items.length + 1,
                 title: '',
+                content: '',
                 sort_order: data.syllabus_items.length,
             },
         ]);
@@ -151,302 +157,411 @@ export default function CourseEdit({
             <div className="p-6">
                 <h1 className="mb-6 text-2xl font-bold">კურსის რედაქტირება</h1>
 
+                {/* Tabs */}
+                <div className="mb-6 flex gap-1 rounded-lg border bg-muted/30 p-1">
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab('basic')}
+                        className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                            activeTab === 'basic'
+                                ? 'bg-background text-foreground shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                    >
+                        ძირითადი
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab('syllabus')}
+                        className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                            activeTab === 'syllabus'
+                                ? 'bg-background text-foreground shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                    >
+                        სილაბუსი ({data.syllabus_items.length})
+                    </button>
+                </div>
+
                 <form onSubmit={submit} className="max-w-2xl space-y-6">
-                    <div className="space-y-4 rounded-lg border p-6">
-                        <h2 className="text-lg font-semibold">
-                            ძირითადი ინფორმაცია
-                        </h2>
+                    {/* Basic Tab */}
+                    {activeTab === 'basic' && (
+                        <>
+                            <div className="space-y-4 rounded-lg border p-6">
+                                <h2 className="text-lg font-semibold">
+                                    ძირითადი ინფორმაცია
+                                </h2>
 
-                        <div>
-                            <Label htmlFor="title">სათაური *</Label>
-                            <Input
-                                id="title"
-                                value={data.title}
-                                onChange={(e) =>
-                                    setData('title', e.target.value)
-                                }
-                            />
-                            <InputError message={errors.title} />
-                        </div>
+                                <div>
+                                    <Label htmlFor="title">სათაური *</Label>
+                                    <Input
+                                        id="title"
+                                        value={data.title}
+                                        onChange={(e) =>
+                                            setData('title', e.target.value)
+                                        }
+                                    />
+                                    <InputError message={errors.title} />
+                                </div>
 
-                        <div>
-                            <Label>მოკლე აღწერა</Label>
-                            <textarea
-                                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-                                rows={2}
-                                value={data.short_description}
-                                onChange={(e) =>
-                                    setData('short_description', e.target.value)
-                                }
-                            />
-                        </div>
+                                <div>
+                                    <Label>მოკლე აღწერა</Label>
+                                    <textarea
+                                        className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                                        rows={2}
+                                        value={data.short_description}
+                                        onChange={(e) =>
+                                            setData(
+                                                'short_description',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                </div>
 
-                        <div>
-                            <Label>სრული აღწერა</Label>
-                            <TiptapEditor
-                                content={data.description}
-                                onChange={(html) =>
-                                    setData('description', html)
-                                }
-                                placeholder="კურსის აღწერა..."
-                            />
-                        </div>
+                                <div>
+                                    <Label>სრული აღწერა</Label>
+                                    <TiptapEditor
+                                        content={data.description}
+                                        onChange={(html) =>
+                                            setData('description', html)
+                                        }
+                                        placeholder="კურსის აღწერა..."
+                                    />
+                                </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <Label>ფორმატი</Label>
-                                <Input
-                                    value={data.format}
-                                    onChange={(e) =>
-                                        setData('format', e.target.value)
-                                    }
-                                />
-                            </div>
-                            <div>
-                                <Label>ხანგრძლივობა</Label>
-                                <Input
-                                    value={data.duration}
-                                    onChange={(e) =>
-                                        setData('duration', e.target.value)
-                                    }
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <Label>ვიდეოს URL</Label>
-                            <Input
-                                value={data.video_url}
-                                onChange={(e) =>
-                                    setData('video_url', e.target.value)
-                                }
-                                placeholder="https://youtube.com/..."
-                            />
-                        </div>
-
-                        <div className="flex items-center gap-4">
-                            <label className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    checked={data.is_active}
-                                    onChange={(e) =>
-                                        setData('is_active', e.target.checked)
-                                    }
-                                />
-                                აქტიური
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    checked={data.is_featured}
-                                    onChange={(e) =>
-                                        setData('is_featured', e.target.checked)
-                                    }
-                                />
-                                გამორჩეული სლაიდერში
-                            </label>
-                        </div>
-                    </div>
-
-                    <div className="space-y-3 rounded-lg border p-6">
-                        <h2 className="text-lg font-semibold">ლექტორები</h2>
-                        {lecturers.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">
-                                ჯერ არ არის ლექტორი
-                            </p>
-                        ) : (
-                            <div className="space-y-2">
-                                {lecturers.map((lecturer) => (
-                                    <label
-                                        key={lecturer.id}
-                                        className="flex items-center gap-2"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={data.lecturer_ids.includes(
-                                                lecturer.id,
-                                            )}
-                                            onChange={() =>
-                                                toggleLecturer(lecturer.id)
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label>ფორმატი</Label>
+                                        <Input
+                                            value={data.format}
+                                            onChange={(e) =>
+                                                setData(
+                                                    'format',
+                                                    e.target.value,
+                                                )
                                             }
                                         />
-                                        {lecturer.full_name}
-                                    </label>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="space-y-3 rounded-lg border p-6">
-                        <h2 className="text-lg font-semibold">კატეგორიები</h2>
-                        {categories.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">
-                                ჯერ არ არის კატეგორია
-                            </p>
-                        ) : (
-                            <div className="space-y-2">
-                                {categories.map((category) => (
-                                    <label
-                                        key={category.id}
-                                        className="flex items-center gap-2"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={data.category_ids.includes(
-                                                category.id,
-                                            )}
-                                            onChange={() =>
-                                                toggleCategory(category.id)
+                                    </div>
+                                    <div>
+                                        <Label>ხანგრძლივობა</Label>
+                                        <Input
+                                            value={data.duration}
+                                            onChange={(e) =>
+                                                setData(
+                                                    'duration',
+                                                    e.target.value,
+                                                )
                                             }
                                         />
-                                        {category.name}
-                                    </label>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                                    </div>
+                                </div>
 
-                    <div className="space-y-3 rounded-lg border p-6">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-semibold">სილაბუსი</h2>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={addSyllabusItem}
-                            >
-                                <Plus className="mr-1 h-4 w-4" /> შეხვედრა
-                            </Button>
-                        </div>
-                        {data.syllabus_items.map((item, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center gap-2"
-                            >
-                                <span className="text-sm text-muted-foreground">
-                                    N°
-                                </span>
-                                <Input
-                                    className="w-16"
-                                    type="number"
-                                    value={item.meeting_number}
-                                    onChange={(e) =>
-                                        updateSyllabusItem(
-                                            index,
-                                            'meeting_number',
-                                            Number(e.target.value),
-                                        )
+                                <div>
+                                    <Label>ვიდეოს URL</Label>
+                                    <Input
+                                        value={data.video_url}
+                                        onChange={(e) =>
+                                            setData('video_url', e.target.value)
+                                        }
+                                        placeholder="https://youtube.com/..."
+                                    />
+                                </div>
+
+                                <div className="flex items-center gap-4">
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={data.is_active}
+                                            onChange={(e) =>
+                                                setData(
+                                                    'is_active',
+                                                    e.target.checked,
+                                                )
+                                            }
+                                        />
+                                        აქტიური
+                                    </label>
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={data.is_featured}
+                                            onChange={(e) =>
+                                                setData(
+                                                    'is_featured',
+                                                    e.target.checked,
+                                                )
+                                            }
+                                        />
+                                        გამორჩეული სლაიდერში
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3 rounded-lg border p-6">
+                                <h2 className="text-lg font-semibold">
+                                    ლექტორები
+                                </h2>
+                                {lecturers.length === 0 ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        ჯერ არ არის ლექტორი
+                                    </p>
+                                ) : (
+                                    <div className="space-y-2">
+                                        {lecturers.map((lecturer) => (
+                                            <label
+                                                key={lecturer.id}
+                                                className="flex items-center gap-2"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={data.lecturer_ids.includes(
+                                                        lecturer.id,
+                                                    )}
+                                                    onChange={() =>
+                                                        toggleLecturer(
+                                                            lecturer.id,
+                                                        )
+                                                    }
+                                                />
+                                                {lecturer.full_name}
+                                            </label>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="space-y-3 rounded-lg border p-6">
+                                <h2 className="text-lg font-semibold">
+                                    კატეგორიები
+                                </h2>
+                                {categories.length === 0 ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        ჯერ არ არის კატეგორია
+                                    </p>
+                                ) : (
+                                    <div className="space-y-2">
+                                        {categories.map((category) => (
+                                            <label
+                                                key={category.id}
+                                                className="flex items-center gap-2"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={data.category_ids.includes(
+                                                        category.id,
+                                                    )}
+                                                    onChange={() =>
+                                                        toggleCategory(
+                                                            category.id,
+                                                        )
+                                                    }
+                                                />
+                                                {category.name}
+                                            </label>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="space-y-4 rounded-lg border p-6">
+                                <h2 className="text-lg font-semibold">
+                                    სურათი
+                                </h2>
+                                <div>
+                                    <Label>კურსის სურათი</Label>
+                                    {course.image && !imagePreview && (
+                                        <img
+                                            src={
+                                                course.image_thumb ||
+                                                course.image
+                                            }
+                                            alt=""
+                                            className="mb-2 h-24 rounded-lg object-cover"
+                                        />
+                                    )}
+                                    <Input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                    />
+                                    {imagePreview && (
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="mt-2 h-24 rounded-lg object-cover"
+                                        />
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="space-y-4 rounded-lg border p-6">
+                                <h2 className="text-lg font-semibold">
+                                    გალერეა
+                                </h2>
+                                <GalleryManager
+                                    images={galleryImages}
+                                    onRemove={handleGalleryRemove}
+                                    onReorder={handleGalleryReorder}
+                                    newFiles={data.gallery}
+                                    onNewFilesChange={(files) =>
+                                        setData('gallery', files)
                                     }
                                 />
-                                <span className="text-sm text-muted-foreground">
-                                    სათაური
-                                </span>
-                                <Input
-                                    className="flex-1"
-                                    value={item.title}
-                                    onChange={(e) =>
-                                        updateSyllabusItem(
-                                            index,
-                                            'title',
-                                            e.target.value,
-                                        )
-                                    }
-                                />
+                            </div>
+
+                            <div className="space-y-4 rounded-lg border p-6">
+                                <h2 className="text-lg font-semibold">SEO</h2>
+                                <div>
+                                    <Label>Meta Title</Label>
+                                    <Input
+                                        value={data.meta_title}
+                                        onChange={(e) =>
+                                            setData(
+                                                'meta_title',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Meta Description</Label>
+                                    <textarea
+                                        className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                                        rows={2}
+                                        value={data.meta_description}
+                                        onChange={(e) =>
+                                            setData(
+                                                'meta_description',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                </div>
+                                <div>
+                                    <Label>OG Image</Label>
+                                    {course.og_image && (
+                                        <img
+                                            src={course.og_image}
+                                            alt=""
+                                            className="mb-2 h-16 rounded"
+                                        />
+                                    )}
+                                    <Input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) =>
+                                            setData(
+                                                'og_image',
+                                                e.target.files?.[0] || null,
+                                            )
+                                        }
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    {/* Syllabus Tab */}
+                    {activeTab === 'syllabus' && (
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-lg font-semibold">
+                                    სილაბუსი
+                                </h2>
                                 <Button
                                     type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => removeSyllabusItem(index)}
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={addSyllabusItem}
                                 >
-                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                    <Plus className="mr-1 h-4 w-4" /> შეხვედრა
                                 </Button>
                             </div>
-                        ))}
-                    </div>
 
-                    <div className="space-y-4 rounded-lg border p-6">
-                        <h2 className="text-lg font-semibold">სურათი</h2>
-                        <div>
-                            <Label>კურსის სურათი</Label>
-                            {course.image && !imagePreview && (
-                                <img
-                                    src={course.image_thumb || course.image}
-                                    alt=""
-                                    className="mb-2 h-24 rounded-lg object-cover"
-                                />
+                            {data.syllabus_items.length === 0 ? (
+                                <div className="rounded-lg border border-dashed p-12 text-center">
+                                    <p className="text-muted-foreground">
+                                        სილაბუსი ცარიელია
+                                    </p>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="mt-4"
+                                        onClick={addSyllabusItem}
+                                    >
+                                        <Plus className="mr-1 h-4 w-4" />{' '}
+                                        პირველი შეხვედრის დამატება
+                                    </Button>
+                                </div>
+                            ) : (
+                                data.syllabus_items.map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className="space-y-3 rounded-lg border p-4"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm font-medium text-muted-foreground">
+                                                N°
+                                            </span>
+                                            <Input
+                                                className="w-16"
+                                                type="number"
+                                                value={item.meeting_number}
+                                                onChange={(e) =>
+                                                    updateSyllabusItem(
+                                                        index,
+                                                        'meeting_number',
+                                                        Number(e.target.value),
+                                                    )
+                                                }
+                                            />
+                                            <Input
+                                                className="flex-1"
+                                                placeholder="შეხვედრის სათაური"
+                                                value={item.title}
+                                                onChange={(e) =>
+                                                    updateSyllabusItem(
+                                                        index,
+                                                        'title',
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() =>
+                                                    removeSyllabusItem(index)
+                                                }
+                                            >
+                                                <Trash2 className="h-4 w-4 text-destructive" />
+                                            </Button>
+                                        </div>
+                                        <div>
+                                            <Label className="mb-1">
+                                                შინაარსი
+                                            </Label>
+                                            <TiptapEditor
+                                                content={item.content}
+                                                onChange={(html) =>
+                                                    updateSyllabusItem(
+                                                        index,
+                                                        'content',
+                                                        html,
+                                                    )
+                                                }
+                                                placeholder="შეხვედრის შინაარსი..."
+                                            />
+                                        </div>
+                                    </div>
+                                ))
                             )}
-                            <Input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                            />
-                            {imagePreview && (
-                                <img
-                                    src={imagePreview}
-                                    alt="Preview"
-                                    className="mt-2 h-24 rounded-lg object-cover"
-                                />
-                            )}
                         </div>
-                    </div>
+                    )}
 
-                    <div className="space-y-4 rounded-lg border p-6">
-                        <h2 className="text-lg font-semibold">გალერეა</h2>
-                        <GalleryManager
-                            images={galleryImages}
-                            onRemove={handleGalleryRemove}
-                            onReorder={handleGalleryReorder}
-                            newFiles={data.gallery}
-                            onNewFilesChange={(files) =>
-                                setData('gallery', files)
-                            }
-                        />
-                    </div>
-
-                    <div className="space-y-4 rounded-lg border p-6">
-                        <h2 className="text-lg font-semibold">SEO</h2>
-                        <div>
-                            <Label>Meta Title</Label>
-                            <Input
-                                value={data.meta_title}
-                                onChange={(e) =>
-                                    setData('meta_title', e.target.value)
-                                }
-                            />
-                        </div>
-                        <div>
-                            <Label>Meta Description</Label>
-                            <textarea
-                                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-                                rows={2}
-                                value={data.meta_description}
-                                onChange={(e) =>
-                                    setData('meta_description', e.target.value)
-                                }
-                            />
-                        </div>
-                        <div>
-                            <Label>OG Image</Label>
-                            {course.og_image && (
-                                <img
-                                    src={course.og_image}
-                                    alt=""
-                                    className="mb-2 h-16 rounded"
-                                />
-                            )}
-                            <Input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) =>
-                                    setData(
-                                        'og_image',
-                                        e.target.files?.[0] || null,
-                                    )
-                                }
-                            />
-                        </div>
-                    </div>
-
+                    {/* Submit - always visible */}
                     <div className="flex gap-3">
                         <Button type="submit" disabled={processing}>
                             {processing ? 'იტვირთება...' : 'განახლება'}

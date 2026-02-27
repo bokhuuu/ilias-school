@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Faq;
 use App\Models\Lecturer;
+use App\Models\SyllabusItem;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -24,6 +25,7 @@ class DashboardController extends Controller
                 'total_categories' => Category::count(),
                 'age_groups_count' => AgeGroup::active()->count(),
                 'total_age_groups' => AgeGroup::count(),
+                'total_syllabus_items' => SyllabusItem::count(),
             ],
         ]);
     }

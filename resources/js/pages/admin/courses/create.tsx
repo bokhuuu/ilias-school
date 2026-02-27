@@ -1,5 +1,4 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Plus, Trash2 } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { FlashMessage } from '@/components/admin/flash-message';
 import { TiptapEditor } from '@/components/admin/tiptap-editor';
@@ -8,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import type { Category, Lecturer, SyllabusItemForm } from '@/types/models';
+import type { Category, Lecturer } from '@/types/models';
 
 interface Props {
     lecturers: { data: Lecturer[] };
@@ -25,7 +24,7 @@ export default function CourseCreate({
     lecturers: { data: lecturers },
     categories: { data: categories },
 }: Props) {
-    const { data, setData, post, processing, errors, transform } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         title: '',
         description: '',
         short_description: '',
@@ -44,7 +43,6 @@ export default function CourseCreate({
         gallery: [] as File[],
         lecturer_ids: [] as number[],
         category_ids: [] as number[],
-        syllabus_items: [] as SyllabusItemForm[],
     });
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -73,42 +71,8 @@ export default function CourseCreate({
         );
     }
 
-    function addSyllabusItem() {
-        setData('syllabus_items', [
-            ...data.syllabus_items,
-            {
-                meeting_number: data.syllabus_items.length + 1,
-                title: '',
-                sort_order: data.syllabus_items.length,
-            },
-        ]);
-    }
-
-    function removeSyllabusItem(index: number) {
-        setData(
-            'syllabus_items',
-            data.syllabus_items.filter((_, i) => i !== index),
-        );
-    }
-
-    function updateSyllabusItem(
-        index: number,
-        field: keyof SyllabusItemForm,
-        value: string | number,
-    ) {
-        const items = [...data.syllabus_items];
-        items[index] = { ...items[index], [field]: value };
-        setData('syllabus_items', items);
-    }
-
     function submit(e: FormEvent) {
         e.preventDefault();
-        transform((d) => ({
-            ...d,
-            syllabus_items: d.syllabus_items.filter(
-                (item) => item.title.trim() !== '',
-            ),
-        }));
         post('/admin/courses', { forceFormData: true });
     }
 
@@ -276,64 +240,6 @@ export default function CourseCreate({
                                 ))}
                             </div>
                         )}
-                    </div>
-
-                    <div className="space-y-3 rounded-lg border p-6">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-semibold">სილაბუსი</h2>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={addSyllabusItem}
-                            >
-                                <Plus className="mr-1 h-4 w-4" /> შეხვედრა
-                            </Button>
-                        </div>
-                        {data.syllabus_items.map((item, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center gap-2"
-                            >
-                                <span className="text-sm text-muted-foreground">
-                                    N°
-                                </span>
-                                <Input
-                                    className="w-16"
-                                    type="number"
-                                    value={item.meeting_number}
-                                    onChange={(e) =>
-                                        updateSyllabusItem(
-                                            index,
-                                            'meeting_number',
-                                            Number(e.target.value),
-                                        )
-                                    }
-                                />
-                                <span className="text-sm text-muted-foreground">
-                                    სათაური
-                                </span>
-                                <Input
-                                    className="flex-1"
-                                    value={item.title}
-                                    onChange={(e) =>
-                                        updateSyllabusItem(
-                                            index,
-                                            'title',
-                                            e.target.value,
-                                        )
-                                    }
-                                />
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => removeSyllabusItem(index)}
-                                >
-                                    <Trash2 className="h-4 w-4 text-destructive" />
-                                </Button>
-                            </div>
-                        ))}
                     </div>
 
                     <div className="space-y-4 rounded-lg border p-6">

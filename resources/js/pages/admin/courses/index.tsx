@@ -38,19 +38,36 @@ export default function CoursesIndex({ courses: { data: courses } }: Props) {
                 </div>
 
                 {courses.length === 0 ? (
-                    <p className="py-12 text-center text-muted-foreground">კურსები არ მოიძებნა</p>
+                    <p className="py-12 text-center text-muted-foreground">
+                        კურსები არ მოიძებნა
+                    </p>
                 ) : (
                     <div className="overflow-x-auto rounded-lg border">
                         <table className="w-full text-sm">
                             <thead className="border-b bg-muted/50">
                                 <tr>
                                     <th className="w-8"></th>
-                                    <th className="px-4 py-3 text-left">სურათი</th>
-                                    <th className="px-4 py-3 text-left">სათაური</th>
-                                    <th className="px-4 py-3 text-left">კატეგორიები</th>
-                                    <th className="px-4 py-3 text-left">სტატუსი</th>
-                                    <th className="px-4 py-3 text-left">გამორჩეული</th>
-                                    <th className="px-4 py-3 text-right">მოქმედება</th>
+                                    <th className="px-4 py-3 text-left">
+                                        სურათი
+                                    </th>
+                                    <th className="px-4 py-3 text-left">
+                                        სათაური
+                                    </th>
+                                    <th className="px-4 py-3 text-left">
+                                        კატეგორიები
+                                    </th>
+                                    <th className="px-4 py-3 text-left">
+                                        სილაბუსი
+                                    </th>
+                                    <th className="px-4 py-3 text-left">
+                                        სტატუსი
+                                    </th>
+                                    <th className="px-4 py-3 text-left">
+                                        გამორჩეული
+                                    </th>
+                                    <th className="px-4 py-3 text-right">
+                                        მოქმედება
+                                    </th>
                                 </tr>
                             </thead>
                             <SortableTableBody
@@ -62,33 +79,71 @@ export default function CoursesIndex({ courses: { data: courses } }: Props) {
                                         <>
                                             <td className="px-4 py-3">
                                                 {course.image_thumb ? (
-                                                    <img src={course.image_thumb} alt="" className="h-10 w-16 rounded object-cover" />
+                                                    <img
+                                                        src={course.image_thumb}
+                                                        alt=""
+                                                        className="h-10 w-16 rounded object-cover"
+                                                    />
                                                 ) : (
                                                     <div className="h-10 w-16 rounded bg-muted" />
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3 font-medium">{course.title}</td>
+                                            <td className="px-4 py-3 font-medium">
+                                                {course.title}
+                                            </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex flex-wrap gap-1">
-                                                    {course.categories?.map((cat) => (
-                                                        <Badge key={cat.id} variant="outline">{cat.name}</Badge>
-                                                    ))}
+                                                    {course.categories?.map(
+                                                        (cat) => (
+                                                            <Badge
+                                                                key={cat.id}
+                                                                variant="outline"
+                                                            >
+                                                                {cat.name}
+                                                            </Badge>
+                                                        ),
+                                                    )}
                                                 </div>
                                             </td>
                                             <td className="px-4 py-3">
-                                                <ActiveToggle isActive={course.is_active} toggleUrl={`/admin/courses/${course.slug}/toggle-active`} />
+                                                <Badge variant="secondary">
+                                                    {course.syllabus_items_count ??
+                                                        0}{' '}
+                                                    შეხვედრა
+                                                </Badge>
                                             </td>
                                             <td className="px-4 py-3">
-                                                {course.is_featured && <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />}
+                                                <ActiveToggle
+                                                    isActive={course.is_active}
+                                                    toggleUrl={`/admin/courses/${course.slug}/toggle-active`}
+                                                />
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                {course.is_featured && (
+                                                    <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                                                )}
                                             </td>
                                             <td className="px-4 py-3 text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <Link href={`/admin/courses/${course.slug}/edit`}>
-                                                        <Button variant="ghost" size="icon">
+                                                    <Link
+                                                        href={`/admin/courses/${course.slug}/edit`}
+                                                    >
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                        >
                                                             <Pencil className="h-4 w-4" />
                                                         </Button>
                                                     </Link>
-                                                    <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(course)}>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() =>
+                                                            setDeleteTarget(
+                                                                course,
+                                                            )
+                                                        }
+                                                    >
                                                         <Trash2 className="h-4 w-4 text-destructive" />
                                                     </Button>
                                                 </div>
@@ -105,7 +160,9 @@ export default function CoursesIndex({ courses: { data: courses } }: Props) {
             <DeleteConfirmDialog
                 open={!!deleteTarget}
                 onClose={() => setDeleteTarget(null)}
-                deleteUrl={deleteTarget ? `/admin/courses/${deleteTarget.slug}` : ''}
+                deleteUrl={
+                    deleteTarget ? `/admin/courses/${deleteTarget.slug}` : ''
+                }
                 title="კურსის წაშლა"
                 description={`დარწმუნებული ხართ რომ გსურთ "${deleteTarget?.title}" წაშლა?`}
             />

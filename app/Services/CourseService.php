@@ -20,6 +20,7 @@ class CourseService
     {
         return Course::sorted()
             ->with(['lecturers', 'categories'])
+            ->withCount('syllabusItems')
             ->get();
     }
 
@@ -124,6 +125,7 @@ class CourseService
                 [
                     'meeting_number' => $item['meeting_number'],
                     'title' => $item['title'],
+                    'content' => $item['content'] ?? '',
                     'sort_order' => $item['sort_order'] ?? $index,
                 ]
             );

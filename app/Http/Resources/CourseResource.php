@@ -43,6 +43,7 @@ class CourseResource extends JsonResource
             'lecturers' => LecturerResource::collection($this->whenLoaded('lecturers')),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'syllabus_items' => SyllabusItemResource::collection($this->whenLoaded('syllabusItems')),
+            'syllabus_items_count' => $this->whenCounted('syllabusItems'),
 
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),

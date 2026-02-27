@@ -17,12 +17,14 @@ class SyllabusItem extends Model
         'course_id',
         'meeting_number',
         'title',
+        'content',
         'sort_order',
     ];
 
 
     public array $translatable = [
         'title',
+        'content',
     ];
 
 

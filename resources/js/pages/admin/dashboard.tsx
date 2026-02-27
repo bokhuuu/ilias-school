@@ -1,5 +1,6 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
+    BookOpen,
     GraduationCap,
     Layers,
     MessageSquare,
@@ -19,6 +20,7 @@ interface Props {
         total_categories: number;
         age_groups_count: number;
         total_age_groups: number;
+        total_syllabus_items: number;
     };
 }
 
@@ -39,6 +41,7 @@ export default function Dashboard({ stats }: Props) {
                         value={stats.lecturers_count}
                         total={stats.total_lecturers}
                         icon={<Users className="h-8 w-8 text-blue-500" />}
+                        href="/admin/lecturers"
                     />
                     <StatCard
                         title="კურსები"
@@ -47,6 +50,26 @@ export default function Dashboard({ stats }: Props) {
                         icon={
                             <GraduationCap className="h-8 w-8 text-green-500" />
                         }
+                        href="/admin/courses"
+                    />
+                    <StatCard
+                        title="სილაბუსი"
+                        value={stats.total_syllabus_items}
+                        icon={<BookOpen className="h-8 w-8 text-emerald-500" />}
+                        href="/admin/courses"
+                    />
+                    <StatCard
+                        title="კატეგორიები"
+                        value={stats.total_categories}
+                        icon={<Tags className="h-8 w-8 text-orange-500" />}
+                        href="/admin/categories"
+                    />
+                    <StatCard
+                        title="ასაკობრივი ჯგუფები"
+                        value={stats.age_groups_count}
+                        total={stats.total_age_groups}
+                        icon={<Layers className="h-8 w-8 text-cyan-500" />}
+                        href="/admin/age-groups"
                     />
                     <StatCard
                         title="FAQ"
@@ -54,25 +77,8 @@ export default function Dashboard({ stats }: Props) {
                         icon={
                             <MessageSquare className="h-8 w-8 text-purple-500" />
                         }
+                        href="/admin/faqs"
                     />
-                </div>
-
-                <div className="mt-6 flex justify-center gap-6">
-                    <div className="w-full max-w-xs md:w-1/3">
-                        <StatCard
-                            title="კატეგორიები"
-                            value={stats.total_categories}
-                            icon={<Tags className="h-8 w-8 text-orange-500" />}
-                        />
-                    </div>
-                    <div className="w-full max-w-xs md:w-1/3">
-                        <StatCard
-                            title="ასაკობრივი ჯგუფები"
-                            value={stats.age_groups_count}
-                            total={stats.total_age_groups}
-                            icon={<Layers className="h-8 w-8 text-cyan-500" />}
-                        />
-                    </div>
                 </div>
             </div>
         </AppLayout>
@@ -84,29 +90,34 @@ function StatCard({
     value,
     total,
     icon,
+    href,
 }: {
     title: string;
     value: number;
     total?: number;
+    subtitle?: string;
     icon: React.ReactNode;
+    href: string;
 }) {
     return (
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm text-muted-foreground">{title}</p>
-                    <p className="mt-1 text-3xl font-bold">
-                        {value}
-                        {total !== undefined && (
-                            <span className="text-lg font-normal text-muted-foreground">
-                                {' '}
-                                / {total}
-                            </span>
-                        )}
-                    </p>
+        <Link href={href} className="block">
+            <div className="rounded-xl border bg-card p-6 shadow-sm transition-colors hover:bg-accent/50">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <p className="text-sm text-muted-foreground">{title}</p>
+                        <p className="mt-1 text-3xl font-bold">
+                            {value}
+                            {total !== undefined && (
+                                <span className="text-lg font-normal text-muted-foreground">
+                                    {' '}
+                                    / {total}
+                                </span>
+                            )}
+                        </p>
+                    </div>
+                    {icon}
                 </div>
-                {icon}
             </div>
-        </div>
+        </Link>
     );
 }

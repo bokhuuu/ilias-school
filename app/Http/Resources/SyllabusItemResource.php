@@ -14,6 +14,7 @@ class SyllabusItemResource extends JsonResource
             'course_id' => $this->course_id,
             'meeting_number' => $this->meeting_number,
             'title' => $this->title,
+            'content' => $this->content,
             'sort_order' => $this->sort_order,
         ];
     }
