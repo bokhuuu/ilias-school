@@ -25,7 +25,7 @@ class StoreCourseRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'short_description' => ['nullable', 'string', 'max:500'],
-            'age_group' => ['nullable', 'string', 'max:100'],
+            'age_group_id' => ['nullable', 'exists:age_groups,id'],
             'format' => ['nullable', 'string', 'max:255'],
             'duration' => ['nullable', 'string', 'max:255'],
             'video_url' => ['nullable', 'url', 'max:512'],
@@ -49,6 +49,7 @@ class StoreCourseRequest extends FormRequest
             'syllabus_items' => ['nullable', 'array'],
             'syllabus_items.*.meeting_number' => ['required', 'integer', 'min:1'],
             'syllabus_items.*.title' => ['required', 'string', 'max:255'],
+            'syllabus_items.*.content' => ['nullable', 'string'],
             'syllabus_items.*.sort_order' => ['integer', 'min:0'],
         ];
     }

@@ -15,7 +15,12 @@ class CourseResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'short_description' => $this->short_description,
-            'age_group' => $this->age_group,
+            'age_group' => $this->whenLoaded('ageGroup', fn() => [
+                'id' => $this->ageGroup->id,
+                'title' => $this->ageGroup->title,
+                'age_range' => $this->ageGroup->age_range,
+            ]),
+            'age_group_id' => $this->age_group_id,
             'format' => $this->format,
             'duration' => $this->duration,
             'video_url' => $this->video_url,

@@ -12,6 +12,7 @@ import type { Category, Lecturer } from '@/types/models';
 interface Props {
     lecturers: { data: Lecturer[] };
     categories: { data: Category[] };
+    ageGroups: { data: { id: number; title: string; age_range: string }[] };
 }
 
 const breadcrumbs = [
@@ -23,12 +24,13 @@ const breadcrumbs = [
 export default function CourseCreate({
     lecturers: { data: lecturers },
     categories: { data: categories },
+    ageGroups: { data: ageGroups },
 }: Props) {
     const { data, setData, post, processing, errors } = useForm({
         title: '',
         description: '',
         short_description: '',
-        age_group: '',
+        age_group_id: '' as number | '',
         format: '',
         duration: '',
         video_url: '',
@@ -125,7 +127,29 @@ export default function CourseCreate({
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-3 gap-4">
+                            <div>
+                                <Label>ასაკობრივი ჯგუფი</Label>
+                                <select
+                                    className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                                    value={data.age_group_id}
+                                    onChange={(e) =>
+                                        setData(
+                                            'age_group_id',
+                                            e.target.value
+                                                ? Number(e.target.value)
+                                                : ('' as unknown as number),
+                                        )
+                                    }
+                                >
+                                    <option value="">-- არჩევა --</option>
+                                    {ageGroups.map((ag) => (
+                                        <option key={ag.id} value={ag.id}>
+                                            {ag.title} ({ag.age_range})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <div>
                                 <Label htmlFor="format">ფორმატი</Label>
                                 <Input

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\ClearsInertiaCache;
 use App\Traits\HasUnicodeSlug;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,7 +24,7 @@ class Course extends Model implements HasMedia
         'title',
         'description',
         'short_description',
-        'age_group',
+        'age_group_id',
         'format',
         'duration',
         'video_url',
@@ -103,6 +104,12 @@ class Course extends Model implements HasMedia
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'course_category');
+    }
+
+
+    public function ageGroup(): BelongsTo
+    {
+        return $this->belongsTo(AgeGroup::class);
     }
 
 

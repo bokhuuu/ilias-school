@@ -7,6 +7,7 @@ use App\Http\Resources\AgeGroupResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\FaqResource;
 use App\Http\Resources\AboutPageResource;
+use App\Http\Resources\LecturerResource;
 use App\Models\AgeGroup;
 use App\Models\Course;
 use App\Models\Faq;
@@ -30,6 +31,9 @@ class HomePageController extends Controller
                     ->featuredSorted()
                     ->with(['categories', 'media'])
                     ->get()
+            ),
+            'lecturers' => LecturerResource::collection(
+                Lecturer::active()->sorted()->with('media')->get()
             ),
             'age_groups' => AgeGroupResource::collection(
                 AgeGroup::active()->sorted()->get()

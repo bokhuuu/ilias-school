@@ -32,7 +32,8 @@ export interface Course {
     slug: string;
     description: string;
     short_description: string;
-    age_group: string;
+    age_group_id?: number | null;
+    age_group?: { id: number; title: string; age_range: string } | null;
     format: string;
     duration: string;
     video_url: string;

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Course\StoreCourseRequest;
 use App\Http\Requests\Course\UpdateCourseRequest;
+use App\Http\Resources\AgeGroupResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\LecturerResource;
+use App\Models\AgeGroup;
 use App\Models\Course;
 use App\Services\CategoryService;
 use App\Services\CourseService;
@@ -36,6 +38,7 @@ class CourseController extends Controller
         return Inertia::render('admin/courses/create', [
             'lecturers' => LecturerResource::collection($this->lecturerService->all()),
             'categories' => CategoryResource::collection($this->categoryService->all()),
+            'ageGroups' => AgeGroupResource::collection(AgeGroup::sorted()->get()),
         ]);
     }
 
@@ -52,12 +55,13 @@ class CourseController extends Controller
 
     public function edit(Course $course)
     {
-        $course->load('lecturers', 'categories', 'syllabusItems', 'media');
+        $course->load('lecturers', 'categories', 'syllabusItems', 'media', 'ageGroup');
 
         return Inertia::render('admin/courses/edit', [
             'course' => CourseResource::make($course),
             'lecturers' => LecturerResource::collection($this->lecturerService->all()),
             'categories' => CategoryResource::collection($this->categoryService->all()),
+            'ageGroups' => AgeGroupResource::collection(AgeGroup::sorted()->get()),
         ]);
     }
 

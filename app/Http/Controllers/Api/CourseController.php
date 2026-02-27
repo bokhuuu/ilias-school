@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
+use App\Models\AgeGroup;
 use App\Models\Course;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,7 @@ class CourseController extends Controller
     {
         $query = Course::active()
             ->sorted()
-            ->with(['lecturers', 'categories', 'media']);
+            ->with(['lecturers', 'categories', 'media', 'ageGroup']);
 
         if ($request->has('category')) {
             $query->whereHas('categories', function ($q) use ($request) {
@@ -27,7 +28,7 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-        $course->load(['lecturers', 'lecturers.media', 'categories', 'syllabusItems', 'media']);
+        $course->load(['lecturers', 'lecturers.media', 'categories', 'syllabusItems', 'media', 'ageGroup']);
 
         return CourseResource::make($course);
     }

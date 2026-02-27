@@ -19,7 +19,7 @@ class CourseService
     public function all()
     {
         return Course::sorted()
-            ->with(['lecturers', 'categories'])
+            ->with(['lecturers', 'categories', 'ageGroup'])
             ->withCount('syllabusItems')
             ->get();
     }
@@ -78,7 +78,7 @@ class CourseService
             'title',
             'description',
             'short_description',
-            'age_group',
+            'age_group_id',
             'format',
             'duration',
             'video_url',
