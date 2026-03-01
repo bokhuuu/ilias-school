@@ -31,6 +31,8 @@ export default function SettingsEdit({ settings, tokens, newToken }: Props) {
         instagram: settings.instagram || '',
         linkedin: settings.linkedin || '',
         registration_url: settings.registration_url || '',
+        unilab_url: settings.unilab_url || '',
+        iliauni_url: settings.iliauni_url || '',
     });
 
     const [tokenName, setTokenName] = useState('');
@@ -124,6 +126,32 @@ export default function SettingsEdit({ settings, tokens, newToken }: Props) {
                                 }
                                 className="mt-1"
                                 placeholder="https://..."
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="unilab_url">UniLab ვებგვერდი</Label>
+                            <Input
+                                id="unilab_url"
+                                value={data.unilab_url}
+                                onChange={(e) =>
+                                    setData('unilab_url', e.target.value)
+                                }
+                                className="mt-1"
+                                placeholder="https://unilab.iliauni.edu.ge/"
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="iliauni_url">
+                                ილიაუნი ვებგვერდი
+                            </Label>
+                            <Input
+                                id="iliauni_url"
+                                value={data.iliauni_url}
+                                onChange={(e) =>
+                                    setData('iliauni_url', e.target.value)
+                                }
+                                className="mt-1"
+                                placeholder="https://iliauni.edu.ge/ge"
                             />
                         </div>
                     </div>

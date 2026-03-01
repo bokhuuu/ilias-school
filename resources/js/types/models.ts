@@ -119,6 +119,8 @@ export interface SiteSettings {
     instagram: string;
     linkedin: string;
     registration_url: string;
+    unilab_url?: string;
+    iliauni_url?: string;
 }
 
 export interface DashboardStats {

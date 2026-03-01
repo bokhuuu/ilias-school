@@ -14,6 +14,8 @@ class SiteSettingService
         'instagram',
         'linkedin',
         'registration_url',
+        'unilab_url',
+        'iliauni_url',
     ];
 
 

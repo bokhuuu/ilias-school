@@ -19,6 +19,7 @@ class AgeGroupResource extends JsonResource
 
             'image' => $this->getFirstMediaUrl('image'),
             'image_thumb' => $this->getFirstMediaUrl('image', 'thumb'),
+            'image_medium' => $this->getFirstMediaUrl('image', 'medium'),
         ];
     }
 }

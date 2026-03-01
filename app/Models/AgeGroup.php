@@ -47,6 +47,10 @@ class AgeGroup extends Model implements HasMedia
             ->width(400)
             ->height(300)
             ->sharpen(10);
+
+        $this->addMediaConversion('medium')
+            ->width(800)
+            ->height(600);
     }
 
 
