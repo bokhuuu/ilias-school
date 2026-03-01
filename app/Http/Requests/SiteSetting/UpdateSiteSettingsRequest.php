@@ -29,6 +29,8 @@ class UpdateSiteSettingsRequest extends FormRequest
             'instagram' => ['nullable', 'url', 'max:512'],
             'linkedin' => ['nullable', 'url', 'max:512'],
             'registration_url' => ['nullable', 'url', 'max:512'],
+            'unilab_url' => ['nullable', 'url', 'max:512'],
+            'iliauni_url' => ['nullable', 'url', 'max:512'],
         ];
     }
 }
