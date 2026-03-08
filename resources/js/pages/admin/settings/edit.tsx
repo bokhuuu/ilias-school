@@ -33,6 +33,7 @@ export default function SettingsEdit({ settings, tokens, newToken }: Props) {
         registration_url: settings.registration_url || '',
         unilab_url: settings.unilab_url || '',
         iliauni_url: settings.iliauni_url || '',
+        youtube: settings.youtube || '',
     });
 
     const [tokenName, setTokenName] = useState('');
@@ -194,6 +195,18 @@ export default function SettingsEdit({ settings, tokens, newToken }: Props) {
                                 }
                                 className="mt-1"
                                 placeholder="https://linkedin.com/..."
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="youtube">YouTube</Label>
+                            <Input
+                                id="youtube"
+                                value={data.youtube}
+                                onChange={(e) =>
+                                    setData('youtube', e.target.value)
+                                }
+                                className="mt-1"
+                                placeholder="https://youtube.com/..."
                             />
                         </div>
                     </div>

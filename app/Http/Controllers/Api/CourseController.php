@@ -22,7 +22,7 @@ class CourseController extends Controller
             });
         }
 
-        return CourseResource::collection($query->get());
+        return CourseResource::collection($query->paginate(12));
     }
 
 

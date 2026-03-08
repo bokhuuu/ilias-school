@@ -48,6 +48,7 @@ export default function CourseEdit({
         age_group_id: course.age_group_id || ('' as number | ''),
         format: course.format || '',
         duration: course.duration || '',
+        price: course.price || '',
         video_url: course.video_url || '',
         meta_title: course.meta_title || '',
         meta_description: course.meta_description || '',
@@ -74,6 +75,15 @@ export default function CourseEdit({
     const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(
         course.gallery || [],
     );
+    const [openSyllabus, setOpenSyllabus] = useState<number[]>([]);
+
+    function toggleSyllabus(index: number) {
+        setOpenSyllabus((prev) =>
+            prev.includes(index)
+                ? prev.filter((i) => i !== index)
+                : [...prev, index],
+        );
+    }
 
     function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0] || null;
@@ -233,7 +243,7 @@ export default function CourseEdit({
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <Label>ასაკობრივი ჯგუფი</Label>
                                         <select
@@ -263,7 +273,7 @@ export default function CourseEdit({
                                     </div>
 
                                     <div>
-                                        <Label>ფორმატი</Label>
+                                        <Label>მისამართი</Label>
                                         <Input
                                             value={data.format}
                                             onChange={(e) =>
@@ -283,6 +293,18 @@ export default function CourseEdit({
                                                     'duration',
                                                     e.target.value,
                                                 )
+                                            }
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>ფასი</Label>
+                                        <Input
+                                            type="number"
+                                            step="10"
+                                            value={data.price}
+                                            onChange={(e) =>
+                                                setData('price', e.target.value)
                                             }
                                         />
                                     </div>
@@ -331,14 +353,15 @@ export default function CourseEdit({
 
                             <div className="space-y-3 rounded-lg border p-6">
                                 <h2 className="text-lg font-semibold">
-                                    ლექტორები
+                                    ლექტორები ({data.lecturer_ids.length}{' '}
+                                    არჩეული)
                                 </h2>
                                 {lecturers.length === 0 ? (
                                     <p className="text-sm text-muted-foreground">
                                         ჯერ არ არის ლექტორი
                                     </p>
                                 ) : (
-                                    <div className="space-y-2">
+                                    <div className="max-h-48 space-y-2 overflow-y-auto">
                                         {lecturers.map((lecturer) => (
                                             <label
                                                 key={lecturer.id}
@@ -364,14 +387,15 @@ export default function CourseEdit({
 
                             <div className="space-y-3 rounded-lg border p-6">
                                 <h2 className="text-lg font-semibold">
-                                    კატეგორიები
+                                    კატეგორიები ({data.category_ids.length}{' '}
+                                    არჩეული)
                                 </h2>
                                 {categories.length === 0 ? (
                                     <p className="text-sm text-muted-foreground">
                                         ჯერ არ არის კატეგორია
                                     </p>
                                 ) : (
-                                    <div className="space-y-2">
+                                    <div className="max-h-48 space-y-2 overflow-y-auto">
                                         {categories.map((category) => (
                                             <label
                                                 key={category.id}
@@ -529,9 +553,14 @@ export default function CourseEdit({
                                 data.syllabus_items.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="space-y-3 rounded-lg border p-4"
+                                        className="rounded-lg border"
                                     >
-                                        <div className="flex items-center gap-2">
+                                        <div
+                                            className="flex cursor-pointer items-center gap-2 p-4"
+                                            onClick={() =>
+                                                toggleSyllabus(index)
+                                            }
+                                        >
                                             <span className="text-sm font-medium text-muted-foreground">
                                                 N°
                                             </span>
@@ -539,6 +568,9 @@ export default function CourseEdit({
                                                 className="w-16"
                                                 type="number"
                                                 value={item.meeting_number}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
                                                 onChange={(e) =>
                                                     updateSyllabusItem(
                                                         index,
@@ -551,6 +583,9 @@ export default function CourseEdit({
                                                 className="flex-1"
                                                 placeholder="შეხვედრის სათაური"
                                                 value={item.title}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
                                                 onChange={(e) =>
                                                     updateSyllabusItem(
                                                         index,
@@ -563,31 +598,40 @@ export default function CourseEdit({
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon"
-                                                onClick={() =>
-                                                    removeSyllabusItem(index)
-                                                }
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    removeSyllabusItem(index);
+                                                }}
                                             >
                                                 <Trash2 className="h-4 w-4 text-destructive" />
                                             </Button>
+                                            <span className="text-muted-foreground">
+                                                {openSyllabus.includes(index)
+                                                    ? '▲'
+                                                    : '▼'}
+                                            </span>
                                         </div>
-                                        <div>
-                                            <Label className="mb-1">
-                                                შინაარსი
-                                            </Label>
-                                            <TiptapEditor
-                                                content={item.content}
-                                                onChange={(html) =>
-                                                    updateSyllabusItem(
-                                                        index,
-                                                        'content',
-                                                        html,
-                                                    )
-                                                }
-                                                placeholder="შეხვედრის შინაარსი..."
-                                            />
-                                        </div>
+                                        {openSyllabus.includes(index) && (
+                                            <div className="border-t p-4">
+                                                <Label className="mb-1">
+                                                    შინაარსი
+                                                </Label>
+                                                <TiptapEditor
+                                                    content={item.content}
+                                                    onChange={(html) =>
+                                                        updateSyllabusItem(
+                                                            index,
+                                                            'content',
+                                                            html,
+                                                        )
+                                                    }
+                                                    placeholder="შეხვედრის შინაარსი..."
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                 ))
+                                // ))
                             )}
                         </div>
                     )}

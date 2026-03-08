@@ -16,6 +16,7 @@ class SiteSettingService
         'registration_url',
         'unilab_url',
         'iliauni_url',
+        'youtube',
     ];
 
 

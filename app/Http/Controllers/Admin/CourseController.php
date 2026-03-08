@@ -36,8 +36,8 @@ class CourseController extends Controller
     public function create()
     {
         return Inertia::render('admin/courses/create', [
-            'lecturers' => LecturerResource::collection($this->lecturerService->all()),
-            'categories' => CategoryResource::collection($this->categoryService->all()),
+            'lecturers' => LecturerResource::collection($this->lecturerService->list()),
+            'categories' => CategoryResource::collection($this->categoryService->list()),
             'ageGroups' => AgeGroupResource::collection(AgeGroup::sorted()->get()),
         ]);
     }
@@ -59,8 +59,8 @@ class CourseController extends Controller
 
         return Inertia::render('admin/courses/edit', [
             'course' => CourseResource::make($course),
-            'lecturers' => LecturerResource::collection($this->lecturerService->all()),
-            'categories' => CategoryResource::collection($this->categoryService->all()),
+            'lecturers' => LecturerResource::collection($this->lecturerService->list()),
+            'categories' => CategoryResource::collection($this->categoryService->list()),
             'ageGroups' => AgeGroupResource::collection(AgeGroup::sorted()->get()),
         ]);
     }

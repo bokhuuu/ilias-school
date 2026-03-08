@@ -21,7 +21,7 @@ class CourseService
         return Course::sorted()
             ->with(['lecturers', 'categories', 'ageGroup'])
             ->withCount('syllabusItems')
-            ->get();
+            ->paginate(20);
     }
 
 
@@ -81,6 +81,7 @@ class CourseService
             'age_group_id',
             'format',
             'duration',
+            'price',
             'video_url',
             'meta_title',
             'meta_description',

@@ -36,6 +36,7 @@ export interface Course {
     age_group?: { id: number; title: string; age_range: string } | null;
     format: string;
     duration: string;
+    price?: number | null;
     video_url: string;
     is_active: boolean;
     is_featured: boolean;
@@ -121,6 +122,7 @@ export interface SiteSettings {
     registration_url: string;
     unilab_url?: string;
     iliauni_url?: string;
+    youtube?: string;
 }
 
 export interface DashboardStats {

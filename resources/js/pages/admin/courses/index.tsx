@@ -9,9 +9,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import type { Course } from '@/types/models';
+import { Pagination } from '@/components/admin/pagination';
 
 interface Props {
-    courses: { data: Course[] };
+    courses: {
+        data: Course[];
+        meta: {
+            links: { url: string | null; label: string; active: boolean }[];
+        };
+    };
 }
 
 const breadcrumbs = [
@@ -19,7 +25,7 @@ const breadcrumbs = [
     { title: 'კურსები', href: '/admin/courses' },
 ];
 
-export default function CoursesIndex({ courses: { data: courses } }: Props) {
+export default function CoursesIndex({ courses }: Props) {
     const [deleteTarget, setDeleteTarget] = useState<Course | null>(null);
 
     return (
@@ -37,7 +43,7 @@ export default function CoursesIndex({ courses: { data: courses } }: Props) {
                     </Link>
                 </div>
 
-                {courses.length === 0 ? (
+                {courses.data.length === 0 ? (
                     <p className="py-12 text-center text-muted-foreground">
                         კურსები არ მოიძებნა
                     </p>
@@ -71,7 +77,7 @@ export default function CoursesIndex({ courses: { data: courses } }: Props) {
                                 </tr>
                             </thead>
                             <SortableTableBody
-                                items={courses}
+                                items={courses.data}
                                 reorderUrl="/admin/courses/reorder"
                                 renderRow={(item) => {
                                     const course = item as Course;
@@ -155,6 +161,7 @@ export default function CoursesIndex({ courses: { data: courses } }: Props) {
                         </table>
                     </div>
                 )}
+                <Pagination links={courses.meta.links} />
             </div>
 
             <DeleteConfirmDialog

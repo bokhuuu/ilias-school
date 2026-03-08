@@ -31,6 +31,7 @@ class UpdateSiteSettingsRequest extends FormRequest
             'registration_url' => ['nullable', 'url', 'max:512'],
             'unilab_url' => ['nullable', 'url', 'max:512'],
             'iliauni_url' => ['nullable', 'url', 'max:512'],
+            'youtube' => ['nullable', 'url', 'max:512'],
         ];
     }
 }

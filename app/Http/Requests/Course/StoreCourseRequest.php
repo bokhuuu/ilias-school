@@ -28,6 +28,7 @@ class StoreCourseRequest extends FormRequest
             'age_group_id' => ['nullable', 'exists:age_groups,id'],
             'format' => ['nullable', 'string', 'max:255'],
             'duration' => ['nullable', 'string', 'max:255'],
+            'price' => ['nullable', 'numeric', 'min:0'],
             'video_url' => ['nullable', 'url', 'max:512'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],

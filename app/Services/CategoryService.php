@@ -8,6 +8,12 @@ class CategoryService
 {
     public function all()
     {
+        return Category::sorted()->paginate(20);
+    }
+
+
+    public function list()
+    {
         return Category::sorted()->get();
     }
 

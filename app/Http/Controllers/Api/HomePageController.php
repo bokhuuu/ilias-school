@@ -33,7 +33,7 @@ class HomePageController extends Controller
                     ->get()
             ),
             'lecturers' => LecturerResource::collection(
-                Lecturer::active()->sorted()->with('media')->get()
+                Lecturer::active()->sorted()->with('media')->take(12)->get()
             ),
             'age_groups' => AgeGroupResource::collection(
                 AgeGroup::active()->sorted()->get()

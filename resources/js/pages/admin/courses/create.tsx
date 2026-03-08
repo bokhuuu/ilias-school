@@ -33,6 +33,7 @@ export default function CourseCreate({
         age_group_id: '' as number | '',
         format: '',
         duration: '',
+        price: '',
         video_url: '',
         meta_title: '',
         meta_description: '',
@@ -127,7 +128,7 @@ export default function CourseCreate({
                             />
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label>ასაკობრივი ჯგუფი</Label>
                                 <select
@@ -151,7 +152,7 @@ export default function CourseCreate({
                                 </select>
                             </div>
                             <div>
-                                <Label htmlFor="format">ფორმატი</Label>
+                                <Label htmlFor="format">მისამართი</Label>
                                 <Input
                                     id="format"
                                     value={data.format}
@@ -160,6 +161,7 @@ export default function CourseCreate({
                                     }
                                 />
                             </div>
+
                             <div>
                                 <Label htmlFor="duration">ხანგრძლივობა</Label>
                                 <Input
@@ -167,6 +169,18 @@ export default function CourseCreate({
                                     value={data.duration}
                                     onChange={(e) =>
                                         setData('duration', e.target.value)
+                                    }
+                                />
+                            </div>
+
+                            <div>
+                                <Label>ფასი</Label>
+                                <Input
+                                    type="number"
+                                    step="10"
+                                    value={data.price}
+                                    onChange={(e) =>
+                                        setData('price', e.target.value)
                                     }
                                 />
                             </div>
@@ -209,13 +223,15 @@ export default function CourseCreate({
                     </div>
 
                     <div className="space-y-3 rounded-lg border p-6">
-                        <h2 className="text-lg font-semibold">ლექტორები</h2>
+                        <h2 className="text-lg font-semibold">
+                            ლექტორები ({data.lecturer_ids.length} არჩეული)
+                        </h2>
                         {lecturers.length === 0 ? (
                             <p className="text-sm text-muted-foreground">
                                 ჯერ არ არის ლექტორი
                             </p>
                         ) : (
-                            <div className="space-y-2">
+                            <div className="max-h-48 space-y-2 overflow-y-auto">
                                 {lecturers.map((lecturer) => (
                                     <label
                                         key={lecturer.id}
@@ -238,13 +254,15 @@ export default function CourseCreate({
                     </div>
 
                     <div className="space-y-3 rounded-lg border p-6">
-                        <h2 className="text-lg font-semibold">კატეგორიები</h2>
+                        <h2 className="text-lg font-semibold">
+                            კატეგორიები ({data.category_ids.length} არჩეული)
+                        </h2>
                         {categories.length === 0 ? (
                             <p className="text-sm text-muted-foreground">
                                 ჯერ არ არის კატეგორია
                             </p>
                         ) : (
-                            <div className="space-y-2">
+                            <div className="max-h-48 space-y-2 overflow-y-auto">
                                 {categories.map((category) => (
                                     <label
                                         key={category.id}

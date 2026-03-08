@@ -23,6 +23,7 @@ class CourseResource extends JsonResource
             'age_group_id' => $this->age_group_id,
             'format' => $this->format,
             'duration' => $this->duration,
+            'price' => $this->price,
             'video_url' => $this->video_url,
             'is_active' => $this->is_active,
             'is_featured' => $this->is_featured,

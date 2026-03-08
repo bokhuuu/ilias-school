@@ -17,6 +17,12 @@ class LecturerService
 
     public function all()
     {
+        return Lecturer::sorted()->paginate(20);
+    }
+
+
+    public function list()
+    {
         return Lecturer::sorted()->get();
     }
 

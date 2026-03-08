@@ -10,12 +10,12 @@ class LecturerController extends Controller
 {
     public function index()
     {
-        $lecturers = Lecturer::active()
-            ->sorted()
-            ->with('media')
-            ->get();
-
-        return LecturerResource::collection($lecturers);
+        return LecturerResource::collection(
+            Lecturer::active()
+                ->sorted()
+                ->with('media')
+                ->paginate(12)
+        );
     }
 
 

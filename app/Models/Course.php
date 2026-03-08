@@ -27,6 +27,7 @@ class Course extends Model implements HasMedia
         'age_group_id',
         'format',
         'duration',
+        'price',
         'video_url',
         'meta_title',
         'meta_description',
